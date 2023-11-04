@@ -1,5 +1,5 @@
 # MetblockD
-Metchain full node bitcoin implementation written in Go (golang).
+Metchain full node implementation written in Go (golang).
 
 # What is Metblock?
 Metchain Blockchain is an attempt at a proof-of-work on layer 1 and proof-of-stake on layer 2 cryptocurrency with instant confirmations and 10 seconds block times. It is based on the PHANTOM protocol, a generalization of Nakamoto consensus with BFTs Byzantine Fault Tolerance.
