@@ -13,71 +13,90 @@ type GenesisConsensus struct {
 	PreviousHash [32]byte //As per the Hash size
 	Merkleroot   []byte
 	Height       int64
-	Transaction  mconfig.Txtransaction
+	Transaction  *mconfig.Txtransaction
 }
 
 func GenesisGenrate() *GenesisConsensus {
 	g := *mconfig.NewGen()
-	Gc := new(GenesisConsensus)
-	Gc.Nonce = g.Nonce
-	Gc.Timestamp = g.Timestamp
-	Gc.Merkleroot = g.Merkleroot
-	Gc.PreviousHash = g.PreviousHash
-	Gc.Height = g.Height
-	Gc.Transaction = g.Transaction
+	return &GenesisConsensus{
+		Nonce:        g.Nonce,
+		Timestamp:    g.Timestamp,
+		Merkleroot:   g.Merkleroot,
+		PreviousHash: g.PreviousHash,
+		Height:       g.Height,
+		Transaction:  g.Transaction,
+	}
+}
 
-	return Gc
+func (gc *GenesisConsensus) VerifyNonce() {
+	msg, err := consensus.VerfiyNonce(gc.Nonce)
+	if err {
+		log.Fatalf("%s : %s", msg, err)
+	}
+
+}
+
+func (gc *GenesisConsensus) VerifyTimestamp() {
+	msg, err := consensus.VerifyTimestamp(int(gc.Timestamp))
+	if err {
+		log.Fatalf("%s : %s", msg, err)
+	}
+
+}
+
+func (gc *GenesisConsensus) VerifyMessage() {
+	msg, err := consensus.VerifyMessage()
+	if err {
+		log.Fatalf("%s : %s", msg, err)
+	}
+
+}
+
+func (gc *GenesisConsensus) VerifyMerkleRoot() {
+	msg, err := consensus.VerifyMerkleRoot()
+	if err {
+		log.Fatalf("%s : %s", msg, err)
+	}
+}
+
+func (gc *GenesisConsensus) VerifyPreviousHash() {
+	msg, err := consensus.VerifyPreviousHash()
+	if err {
+		log.Fatalf("%s : %s", msg, err)
+	}
+}
+
+func (gc *GenesisConsensus) VerifyTransaction() {
+	msg, err := consensus.VerifyTransaction()
+	if err {
+		log.Fatalf("%s : %s", msg, err)
+	}
 }
 
 func (gc *GenesisConsensus) VerifyGenesis() (string, bool) {
 
-	msg, err := consensus.VerfiyNonce(gc.Nonce)
-	if err {
-		log.Println(msg)
-	} else {
-		log.Println(msg)
-	}
+	// Verify the Gensis Nonce
+	gc.VerifyNonce()
 
-	msg, err = consensus.VerifyTimestamp(int(gc.Timestamp))
-	if err {
-		log.Println(msg)
-	} else {
-		log.Println(msg)
-	}
-	msg, err = consensus.VerifyMessage()
-	if err {
-		log.Println(msg)
-	} else {
-		log.Println(msg)
-	}
-	msg, err = consensus.VerifyMerkleRoot()
-	if err {
-		log.Println(msg)
-	} else {
-		log.Println(msg)
-	}
-	msg, err = consensus.VerifyPreviousHash()
-	if err {
-		log.Println(msg)
-	} else {
-		log.Println(msg)
-	}
+	// Verify the Gensis Timestamp
+	gc.VerifyTimestamp()
 
-	msg, err = consensus.VerifyTransaction()
-	if err {
-		log.Println(msg)
-	} else {
-		log.Println(msg)
-	}
-	if err {
-		return msg, err
-	} else {
-		return "Consensus Verification Complete", err
-	}
+	// Verify the Gensis Message
+	gc.VerifyMessage()
+
+	// Verify the Gensis MerkleRoot
+	gc.VerifyMerkleRoot()
+
+	// Verify the Gensis PreviousHash
+	gc.VerifyPreviousHash()
+
+	// Verify the Gensis Transaction
+	gc.VerifyTransaction()
+	return "Gensis verification Complete.", false
 }
 
 func (gc *GenesisConsensus) GensisCompile() []byte {
-	m, _ := json.Marshal(gc)
+	m, _ := gc.MarshalJSON()
 	return m
 }
 
@@ -125,24 +144,4 @@ func (gc *GenesisConsensus) MarshalJSON() ([]byte, error) {
 	})
 
 	return n, nil
-}
-
-func (g *GenesisConsensus) GenesisUncompile(m []byte) {
-	v := &struct {
-		Timestamp    int64                 `json:"timestamp"`
-		Nonce        int                   `json:"nonce"`
-		PreviousHash [32]byte              `json:"previousHash"`
-		Merkleroot   []byte                `json:"merkleroot"`
-		Height       int64                 `json:"height"`
-		Transaction  mconfig.Txtransaction `json:"transaction"`
-	}{
-		Timestamp:    g.Timestamp,
-		Nonce:        g.Nonce,
-		Merkleroot:   g.Merkleroot,
-		PreviousHash: g.PreviousHash,
-		Height:       g.Height,
-		Transaction:  g.Transaction,
-	}
-	json.Unmarshal(m, v)
-	log.Printf("%v", (v.Timestamp))
 }

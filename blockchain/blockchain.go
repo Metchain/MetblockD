@@ -3,6 +3,7 @@ package blockchain
 import (
 	"github.com/Metchain/Metblock/domain"
 	pb "github.com/Metchain/Metblock/proto"
+	"log"
 	"sync"
 )
 
@@ -26,11 +27,22 @@ type Blockchain struct {
 	//added for mining
 	Mux sync.Mutex
 
-	MuxNeighbors    sync.Mutex
-	LastBlockTime   int64
-	LastBlockHeight uint64
-	LastBlockHash   [32]byte
+	MuxNeighbors sync.Mutex
+
+	LastRPCBlock *LastRPCBlock
 	*domain.Metchain
+}
+
+type LastRPCBlock struct {
+	Height       uint64
+	Timestamp    int64
+	Nonce        uint64
+	PreviousHash [32]byte //As per the Hash size
+	Megablock    [32]byte
+	Metblock     [32]byte
+	Transactions []*Transaction
+	CurrentHash  [32]byte
+	Bits         uint64
 }
 
 type WalletCreated struct {
@@ -43,7 +55,10 @@ func Start(mc *domain.Metchain) *Blockchain {
 
 	bc := new(Blockchain)
 	bc.Metchain = mc
-	bc.LastBlockHeight, bc.LastBlockHash, bc.LastBlockTime = LastMiniBlockRPC(mc.Dbcon)
+	err := bc.LastMiniBlockRPC(mc.Dbcon)
+	if err != nil {
+		log.Fatalf("Error while processing the Latest RPC Block : %s", err)
+	}
 	bc.NFTStake = bc.GetStakedNFT()
 	return bc
 }

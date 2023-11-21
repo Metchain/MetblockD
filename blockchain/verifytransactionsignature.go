@@ -21,5 +21,4 @@ func (bc *Blockchain) VerifyTransactionSignature(senderPublickey *ecdsa.PublicKe
 
 	//os.Exit(555)
 	return ecdsa.Verify(senderPublickey, h[:], s.R, s.S)
-	return ecdsa.Verify(senderPublickey, h[:], s.R, s.S)
 }

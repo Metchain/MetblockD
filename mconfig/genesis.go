@@ -76,16 +76,17 @@ var NonceHex = []byte{
 var timestamp = (((((((((5*10*5*8*15*9)+(200*100))+(10*100+261))*4)*50+11)*5)*20+13)*17-7)*17 - 4)
 
 func NewGen() *Genesis {
-	g := new(Genesis)
-	g.Nonce = 14071992
-	g.Timestamp = int64(timestamp)
-	g.Merkleroot = MerkleHex
-	g.PreviousHash = Prevhash
-	g.Height = 0
-	g.Transaction = Txtransaction{
-		Txhex:      Hexmsg,
-		Txcoinbase: CoinBaseHex,
+
+	return &Genesis{
+		Nonce:        14071992,
+		Timestamp:    int64(timestamp),
+		Merkleroot:   MerkleHex,
+		PreviousHash: Prevhash,
+		Height:       0,
+		Transaction: &Txtransaction{
+			Txhex:      Hexmsg,
+			Txcoinbase: CoinBaseHex,
+		},
 	}
-	return g
 	//return g
 }

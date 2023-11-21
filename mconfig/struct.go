@@ -10,7 +10,7 @@ type Genesis struct {
 	PreviousHash [32]byte //As per the Hash size
 	Merkleroot   []byte
 	Height       int64
-	Transaction  Txtransaction
+	Transaction  *Txtransaction
 }
 
 type Txtransaction struct {

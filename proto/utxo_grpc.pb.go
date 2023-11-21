@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v4.23.3
-// source: proto/utxo.proto
+// source: utxo.proto
 
 package proto
 
@@ -473,5 +473,5 @@ var UTXOs_ServiceDesc = grpc.ServiceDesc{
 			ClientStreams: true,
 		},
 	},
-	Metadata: "proto/utxo.proto",
+	Metadata: "utxo.proto",
 }

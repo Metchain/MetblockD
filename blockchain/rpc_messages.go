@@ -23,7 +23,6 @@ func GetBlockTemplateBC(mc *domain.Metchain, addr string) *DomainBlock {
 	block.Height = lb.Height
 	block.Timestamp = lb.Timestamp
 	block.Nonce = lb.Nonce
-	block.Nonce = 569658475
 	block.PreviousHash = lb.PreviousHash
 	block.Metblock = lb.Metblock
 	block.Megablock = lb.Megablock
