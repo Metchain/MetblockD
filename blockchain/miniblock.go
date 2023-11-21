@@ -211,12 +211,12 @@ func LastMiniBlock(mc *domain.Metchain) *MBlock {
 	return block
 }
 
-func CreateMiniBlock(b *pb.RpcBlock, db *leveldb.DB, bc *Blockchain) ([32]byte, error) {
+func CreateMiniBlock(b *pb.RpcBlock, db *leveldb.DB, bc *Blockchain) ([32]byte, error, float64) {
 	Temptimestamp := time.Now().UnixMilli()
-	Tempoldntime := bc.LastBlockTime + 10000
-	if bc.LastBlockTime > Temptimestamp || Tempoldntime >= Temptimestamp {
+	Tempoldntime := bc.LastRPCBlock.Timestamp + 6000
+	if bc.LastRPCBlock.Timestamp > Temptimestamp || Tempoldntime >= Temptimestamp {
 		//log.Printf("This is trigered")
-		return [32]byte{}, errors.New("Block is too early")
+		return [32]byte{}, errors.New("Block is too early"), 0
 	}
 
 	bc.Mux.Lock()
@@ -229,19 +229,19 @@ func CreateMiniBlock(b *pb.RpcBlock, db *leveldb.DB, bc *Blockchain) ([32]byte, 
 	//log.Println(bc.MiniBlock)
 
 	nb.nonce = b.Header.Nonce
-	nb.height = bc.LastBlockHeight
-	nb.previousHash = bc.LastBlockHash
-	oldtimestamp = bc.LastBlockTime
+	nb.height = bc.LastRPCBlock.Height + 1
+	nb.previousHash = bc.LastRPCBlock.CurrentHash
+	oldtimestamp = bc.LastRPCBlock.Timestamp
 
 	nb.timestamp = time.Now().UnixMilli()
 
-	oldntime := oldtimestamp + 10000
+	oldntime := oldtimestamp + 6000
 
 	if oldtimestamp > nb.timestamp || oldntime >= nb.timestamp {
 		//log.Printf("This is trigered")
 		nb.bits = nb.bits + 1
-		return [32]byte{}, errors.New("Block is too early")
-	} else if nb.timestamp-oldntime > 2000 && nb.bits > 569658475 {
+		return [32]byte{}, errors.New("Block is too early"), 0
+	} else if nb.timestamp-oldntime > 4000 && nb.bits > 569658475 {
 		nb.bits = nb.bits - 1
 	} else {
 		nb.bits = nb.bits + 1
@@ -269,16 +269,18 @@ func CreateMiniBlock(b *pb.RpcBlock, db *leveldb.DB, bc *Blockchain) ([32]byte, 
 	MetBC := len(bc.MetBlock)
 
 	var ts []*Transaction
-
+	var Reward float64
 	if MinBC <= 11 {
 		bc.MiniBlock = append(bc.MiniBlock, fmt.Sprintf("%x", nb.currentHash))
 		ts = append(transactions, NewTransactionMiner(MINING_SENDER, b.Header.UtxoCommitment, MINING_REWARD))
+		Reward = MINING_REWARD
 	} else if MinBC == 12 && MegBC < 5 {
 		nb.megablock = nb.currentHash
 		bc.MiniBlock = []string{}
 		bc.MegaBlock = append(bc.MegaBlock, fmt.Sprintf("%x", nb.currentHash))
 
 		ts = append(transactions, NewTransactionMiner(MINING_SENDER, b.Header.UtxoCommitment, MINING_REWARD_MEGA))
+		Reward = MINING_REWARD_MEGA
 	} else {
 		nb.metblock = nb.currentHash
 		bc.MegaBlock = []string{}
@@ -286,6 +288,7 @@ func CreateMiniBlock(b *pb.RpcBlock, db *leveldb.DB, bc *Blockchain) ([32]byte, 
 		bc.MetBlock = append(bc.MetBlock, fmt.Sprintf("%x", nb.currentHash))
 
 		ts = append(transactions, NewTransactionMiner(MINING_SENDER, b.Header.UtxoCommitment, MINING_REWARD_MET))
+		Reward = MINING_REWARD_MET
 	}
 	if MetBC >= 1 {
 		bc.MetBlock = []string{}
@@ -304,10 +307,7 @@ func CreateMiniBlock(b *pb.RpcBlock, db *leveldb.DB, bc *Blockchain) ([32]byte, 
 	}
 	nb.transactions = ts
 	nb.BlockToDB(db)
-
-	bc.LastBlockTime = nb.timestamp
-	bc.LastBlockHeight = nb.height + 1
-	bc.LastBlockHash = nb.currentHash
+	bc.LastRPCBlock.BlockToRPCLastBlock(nb)
 
 	if len(nfttx) >= 1 {
 
@@ -316,22 +316,58 @@ func CreateMiniBlock(b *pb.RpcBlock, db *leveldb.DB, bc *Blockchain) ([32]byte, 
 	}
 	bc.WalletToDB(db, nb)
 
-	return nb.currentHash, nil
+	return nb.currentHash, nil, Reward
 }
 
-func LastMiniBlockRPC(db *leveldb.DB) (uint64, [32]byte, int64) {
+func (lb *LastRPCBlock) BlockToRPCLastBlock(nb *MiniBlock) {
+	b := &LastRPCBlock{
+		Height:       nb.height,
+		PreviousHash: nb.previousHash,
+		Timestamp:    nb.timestamp,
+		Bits:         nb.bits,
+		Nonce:        nb.nonce,
+		Megablock:    nb.megablock,
+		Metblock:     nb.metblock,
+		Transactions: nb.transactions,
+		CurrentHash:  nb.currentHash,
+	}
+	lb = b
+}
+func (bc *Blockchain) LastMiniBlockRPC(db *leveldb.DB) error {
 	lbk, lbv := domain.LastBlockRPC(db)
 	genkey := ("bk-" + strings.Repeat("0", 64))
 	nbk := fmt.Sprintf("%v", string(lbk))
 	if nbk == genkey {
 		n := domain.ReadTx(lbv)
-		return n.Height + 1, n.PreviousHash, n.Timestamp
+
+		b := &LastRPCBlock{
+			Height:       n.Height,
+			PreviousHash: n.PreviousHash,
+			Timestamp:    n.Timestamp,
+		}
+		bc.LastRPCBlock = b
 
 	} else {
 		block := new(MBlock)
-		block.UnmarshalJSON(lbv)
-		return block.Height + 1, block.CurrentHash, block.Timestamp
+		err := block.UnmarshalJSON(lbv)
+		if err != nil {
+			return err
+		}
+		b := &LastRPCBlock{
+			Height:       block.Height,
+			PreviousHash: block.PreviousHash,
+			Timestamp:    block.Timestamp,
+			Bits:         block.Bits,
+			Nonce:        block.Nonce,
+			Megablock:    block.Megablock,
+			Metblock:     block.Metblock,
+			Transactions: block.Transactions,
+			CurrentHash:  block.CurrentHash,
+		}
+		bc.LastRPCBlock = b
 	}
+
+	return nil
 
 }
 

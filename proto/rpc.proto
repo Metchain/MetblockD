@@ -183,5 +183,23 @@ message SubmitBlockResponseMessage{
   }
   RejectReason rejectReason = 1;
   RPCError error = 1000;
-  string consensushash = 2;
+  string consensusBlockhash = 2;
+  string consensusreward = 3;
+}
+
+message SubmitSignedTXRequestMessage {
+  bytes WalletSeed = 1;
+  bytes SenderWallet = 2;
+  bytes ReciverWallet = 3;
+  float SendersAmount = 4;
+  bytes Signedtxhash = 5;
+}
+
+message SubmitSignedTXResponseMessage {
+  bytes WalletSeed = 1;
+  bytes SenderWallet = 2;
+  bytes ReciverWallet = 3;
+  bytes TxHash = 4;
+  string Status = 5;
+
 }

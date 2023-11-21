@@ -15,6 +15,11 @@ const (
 	MainnetPortRPC = 14031
 	MainnetPortP2p = 14041
 	RPCMaxClients  = 125
+	MinimumStaking = 15000
+	Lock3Month     = 131400
+	Lock6Month     = 262800
+	Lock9Month     = 350400
+	Lock12Month    = 525600
 )
 
 type Config struct {

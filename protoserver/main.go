@@ -121,7 +121,20 @@ func (s *rpcServer) MessageStream(stream pb.RPC_MessageStreamServer) error {
 	if req.GetGetBlockDagInfoRequest() != nil {
 		s.Server_GetGetBlockDagInfoRequest(stream)
 	}
+	if req.GetSubmitSignedTXRequestMessage() != nil {
 
+		template := &pb.MetchainMessage{}
+		template.Payload = req.Payload
+
+		reqs := new(pb.MetchainMessage)
+		payloads := new(pb.MetchainMessage_SubmitSignedTXResponseMessage)
+		payloads.SubmitSignedTXResponseMessage = s.GetSubmitSignedTX(template.GetSubmitSignedTXRequestMessage())
+		reqs.Payload = payloads
+		err := stream.Send(reqs)
+		if err != nil {
+			log.Println("Error Sending Block Submit Response")
+		}
+	}
 	//log.Printf("checking the recivied payload : %v", req.String())
 	return nil
 }
@@ -163,16 +176,43 @@ func NewRPCBlockLevelParents(lb *blockchain.DomainBlock) []*pb.RpcBlockLevelPare
 
 func (s *rpcServer) GetBlockSubmitResponses(block *pb.SubmitBlockRequestMessage) *pb.SubmitBlockResponseMessage {
 
-	hash, err := blockchain.CreateMiniBlock(block.Block, s.Dbcon, s.Blockchain)
+	hash, err, reward := blockchain.CreateMiniBlock(block.Block, s.Dbcon, s.Blockchain)
 	ConesusHash := fmt.Sprintf("%x", hash)
+	ConesusReward := fmt.Sprintf("%.2f", reward)
 	if err != nil {
 		return &pb.SubmitBlockResponseMessage{
-			Consensushash: ConesusHash,
-			RejectReason:  1,
+			ConsensusBlockhash: ConesusHash,
+
+			RejectReason: 1,
 		}
 	}
 	return &pb.SubmitBlockResponseMessage{
-		Consensushash: ConesusHash,
-		RejectReason:  0,
+		ConsensusBlockhash: ConesusHash,
+		Consensusreward:    ConesusReward,
+		RejectReason:       0,
 	}
+}
+
+func (s *rpcServer) GetSubmitSignedTX(sender *pb.SubmitSignedTXRequestMessage) *pb.SubmitSignedTXResponseMessage {
+
+	tx := s.AddTransactionRemoveNew(bytestostring(sender.SenderWallet), bytestostring(sender.ReciverWallet), sender.SendersAmount)
+	status := "confirmed"
+	if tx == [32]byte{} {
+		status = "rejected"
+	}
+	return &pb.SubmitSignedTXResponseMessage{
+		SenderWallet:  sender.SenderWallet,
+		ReciverWallet: sender.ReciverWallet,
+		TxHash:        stringtobyte(bytes32tostring(tx)),
+		Status:        status,
+	}
+}
+func stringtobyte(s string) []byte {
+	return []byte(s)
+}
+func bytestostring(b []byte) string {
+	return fmt.Sprintf("%s", b)
+}
+func bytes32tostring(b [32]byte) string {
+	return fmt.Sprintf("%s", b)
 }

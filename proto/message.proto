@@ -34,6 +34,10 @@ message MetchainMessage {
     P2PBlockWithTrustedDataRequestMessage P2PBlockWithTrustedDataRequestMessage = 16;
     P2PBlockWithTrustedDataResponseMessage P2PBlockWithTrustedDataResponseMessage = 17;
 
+
+    SubmitSignedTXRequestMessage submitSignedTXRequestMessage = 18;
+    SubmitSignedTXResponseMessage submitSignedTXResponseMessage = 19;
+
   }
 }
 

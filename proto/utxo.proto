@@ -98,8 +98,8 @@ message StakeNFT{
    string Blockid = 6;
    string Blockhash = 7;
    string StakedP = 10;
-   string LockTime = 8;
-   string UnlockTime = 9;
+   uint64 LockTime = 8;
+   uint64 UnlockTime = 9;
 }
 
 
