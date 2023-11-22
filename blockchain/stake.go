@@ -26,13 +26,14 @@ func (bc *Blockchain) StakeNFTMet(sender string, seed string, value string, nft 
 	if bc.verifyNFt(sender, nft) {
 		var dur string
 		if stakeunlock == "3" {
-			dur = "131400"
+			dur = fmt.Sprintf("%s", mconfig.Lock3Month)
 		} else if stakeunlock == "6" {
-			dur = "262800"
+			dur = fmt.Sprintf("%s", mconfig.Lock6Month)
 		} else if stakeunlock == "9" {
-			dur = "350400"
+			dur = fmt.Sprintf("%s", mconfig.Lock9Month)
 		} else if stakeunlock == "12" {
-			dur = "525600"
+			dur = fmt.Sprintf("%s", mconfig.Lock12Month)
+
 		}
 		Unlocktime, _ := time.ParseDuration(dur + "m")
 

@@ -19,16 +19,16 @@ type DomainBlock struct {
 
 func GetBlockTemplateBC(mc *domain.Metchain, addr string) *DomainBlock {
 	lb := LastMiniBlock(mc)
-	block := new(DomainBlock)
-	block.Height = lb.Height
-	block.Timestamp = lb.Timestamp
-	block.Nonce = lb.Nonce
-	block.PreviousHash = lb.PreviousHash
-	block.Metblock = lb.Metblock
-	block.Megablock = lb.Megablock
-	block.CurrentHash = lb.CurrentHash
-	block.UtxoCommitment = addr
-	block.Bits = lb.Bits
 
-	return block
+	return &DomainBlock{
+		Height:         lb.Height,
+		Timestamp:      lb.Timestamp,
+		Nonce:          lb.Nonce,
+		PreviousHash:   lb.PreviousHash,
+		Metblock:       lb.Metblock,
+		Megablock:      lb.Megablock,
+		CurrentHash:    lb.CurrentHash,
+		UtxoCommitment: addr,
+		Bits:           lb.Bits,
+	}
 }
