@@ -295,9 +295,9 @@ func CreateMiniBlock(b *pb.RpcBlock, db *leveldb.DB, bc *Blockchain) ([32]byte, 
 	}
 
 	for _, tx := range ntx {
-
-		ts = append(ts, &Transaction{tx.senderBlockchainAddress, tx.recipientBlockchainAddress, tx.txtype, tx.value, tx.txhash, tx.timestamp, 1})
-
+		if tx.senderBlockchainAddress != mconfig.DeadWallet && (tx.senderBlockchainAddress != MINING_SENDER || tx.txtype == 3) {
+			ts = append(ts, &Transaction{tx.senderBlockchainAddress, tx.recipientBlockchainAddress, tx.txtype, tx.value, tx.txhash, tx.timestamp, 1})
+		}
 	}
 
 	for _, tx := range nftre {
@@ -307,7 +307,7 @@ func CreateMiniBlock(b *pb.RpcBlock, db *leveldb.DB, bc *Blockchain) ([32]byte, 
 	}
 	nb.transactions = ts
 	nb.BlockToDB(db)
-	bc.LastRPCBlock.BlockToRPCLastBlock(nb)
+	bc.LastRPCBlock = bc.LastRPCBlock.BlockToRPCLastBlock(nb)
 
 	if len(nfttx) >= 1 {
 
@@ -319,8 +319,8 @@ func CreateMiniBlock(b *pb.RpcBlock, db *leveldb.DB, bc *Blockchain) ([32]byte, 
 	return nb.currentHash, nil, Reward
 }
 
-func (lb *LastRPCBlock) BlockToRPCLastBlock(nb *MiniBlock) {
-	b := &LastRPCBlock{
+func (lb *LastRPCBlock) BlockToRPCLastBlock(nb *MiniBlock) *LastRPCBlock {
+	return &LastRPCBlock{
 		Height:       nb.height,
 		PreviousHash: nb.previousHash,
 		Timestamp:    nb.timestamp,
@@ -331,7 +331,7 @@ func (lb *LastRPCBlock) BlockToRPCLastBlock(nb *MiniBlock) {
 		Transactions: nb.transactions,
 		CurrentHash:  nb.currentHash,
 	}
-	lb = b
+
 }
 func (bc *Blockchain) LastMiniBlockRPC(db *leveldb.DB) error {
 	lbk, lbv := domain.LastBlockRPC(db)

@@ -102,6 +102,18 @@ message StakeNFT{
    uint64 UnlockTime = 9;
 }
 
+message StakeNFTOldVersion{
+   string NFTid = 1;
+   string NFTSender = 2;
+   string StakeAmount = 4;
+   string Txhash = 5;
+   string Blockid = 6;
+   string Blockhash = 7;
+   string StakedP = 10;
+   string LockTime = 8;
+   string UnlockTime = 9;
+}
+
 
 
 service UTXOs {

@@ -157,6 +157,12 @@ func (bc *Blockchain) GetStakedNFT() []*pb.StakeNFT {
 
 			dbnft := new(pb.StakeNFT)
 			proto.Unmarshal(m, dbnft)
+			if dbnft.LockTime == 0 {
+				dbnft, err = bc.ConverOldNFTToNew(m, dbnft)
+				if err != nil {
+					log.Printf("Error while staking nft : %s \n", err)
+				}
+			}
 			Staked = append(Staked, dbnft)
 
 		}
@@ -166,6 +172,26 @@ func (bc *Blockchain) GetStakedNFT() []*pb.StakeNFT {
 	log.Println("Checking for Staked NFT's")
 
 	return Staked
+}
+
+func (bc *Blockchain) ConverOldNFTToNew(m []byte, nft *pb.StakeNFT) (*pb.StakeNFT, error) {
+	oldstake := new(pb.StakeNFTOldVersion)
+	proto.Unmarshal(m, oldstake)
+	loctime, err := strconv.ParseInt(oldstake.LockTime, 10, 64)
+	if err != nil {
+		return nil, err
+	} else {
+		nft.LockTime = uint64(loctime)
+
+	}
+	unloctime, err := strconv.ParseInt(oldstake.UnlockTime, 10, 64)
+	if err != nil {
+		return nil, err
+	} else {
+		nft.UnlockTime = uint64(unloctime)
+
+	}
+	return nft, nil
 }
 
 func CheckNFT(nv []int, nft string) bool {

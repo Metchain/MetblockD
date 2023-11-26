@@ -20,6 +20,7 @@ const (
 	Lock6Month     = 262800
 	Lock9Month     = 350400
 	Lock12Month    = 525600
+	DeadWallet     = "metchain:000000000000000000000000000000000000000000000000000000000000DEAD"
 )
 
 type Config struct {

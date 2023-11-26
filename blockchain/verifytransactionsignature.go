@@ -17,6 +17,7 @@ type TxVerify struct {
 
 // for verification if the transaction is legit
 func (bc *Blockchain) VerifyTransactionSignature(senderPublickey *ecdsa.PublicKey, s *utils.Signature, tx *Transaction) error {
+
 	m, err := json.Marshal(tx)
 	if err != nil {
 		return err
