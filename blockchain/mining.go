@@ -2,7 +2,7 @@ package blockchain
 
 import (
 	"fmt"
-	"log"
+
 	"strings"
 	"time"
 )
@@ -39,7 +39,7 @@ func (bc *Blockchain) ValidProof(nonce uint64, previousHash [32]byte, transactio
 	guessBlock := MiniBlock{nonce: nonce, timestamp: timestamp, previousHash: previousHash, transactions: transactions, megablock: megablock, metblock: metblock}
 
 	guessHashStr := fmt.Sprintf("%x", guessBlock.Hash())
-	log.Println(guessBlock.Hash())
+	log.Infof("Blockhash:", guessBlock.Hash())
 	return guessHashStr[:difficulty] == zeros
 }
 

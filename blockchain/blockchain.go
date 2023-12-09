@@ -3,7 +3,7 @@ package blockchain
 import (
 	"github.com/Metchain/Metblock/domain"
 	pb "github.com/Metchain/Metblock/proto"
-	"log"
+
 	"sync"
 )
 
@@ -55,9 +55,9 @@ func Start(mc *domain.Metchain) *Blockchain {
 
 	bc := new(Blockchain)
 	bc.Metchain = mc
-	err := bc.LastMiniBlockRPC(mc.Dbcon)
+	err := bc.LastMiniBlockRPC(mc.Db)
 	if err != nil {
-		log.Fatalf("Error while processing the Latest RPC Block : %s", err)
+		log.Criticalf("Error while processing the Latest RPC Block : %s", err)
 	}
 	bc.NFTStake = bc.GetStakedNFT()
 	return bc

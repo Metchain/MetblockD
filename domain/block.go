@@ -1,34 +1,31 @@
 package domain
 
 import (
+	"github.com/Metchain/Metblock/db/database"
 	"github.com/Metchain/Metblock/mconfig"
 	"github.com/btcsuite/goleveldb/leveldb"
-	"github.com/btcsuite/goleveldb/leveldb/util"
-	"log"
 )
+
+var blockkey = database.MakeBucket([]byte("block"))
 
 func (mc *Metchain) LastBlock() ([]byte, []byte) {
 
-	db := mc.Dbcon
+	db := mc.Db
 	key := []byte{}
 	value := []byte{}
-	iter := db.NewIterator(util.BytesPrefix([]byte("bk-")), nil)
+	cursor, err := db.Cursor(blockkey)
+	if err != nil {
+		log.Error(err)
+	}
 	/**/
 
-	ok := iter.Last()
-	if ok {
-		key = iter.Key()
-		value = iter.Value()
-
-	}
-	ok = iter.Next()
-	if ok {
-		key = iter.Key()
-		value = iter.Value()
+	for ok := cursor.Last(); ok; ok = cursor.Next() {
+		dbkey, _ := cursor.Key()
+		value, _ = cursor.Value()
+		key = dbkey.Bytes()
 
 	}
 
-	iter.Release()
 	//log.Println(fmt.Sprintf("%s", key))
 	return key, value
 }
@@ -39,7 +36,7 @@ func BlockByKey(height string) ([]byte, []byte) {
 	//log.Println("Confirming Genesis Block")
 	db, err := leveldb.OpenFile(d, nil)
 	if err != nil {
-		log.Println("Error Opening DB: ", err)
+		log.Infof("Error Opening DB: ", err)
 
 	}
 	key := []byte{}
@@ -53,20 +50,20 @@ func BlockByKey(height string) ([]byte, []byte) {
 	return key, value
 }
 
-func LastBlockRPC(db *leveldb.DB) ([]byte, []byte) {
+func LastBlockRPC(db database.Database) ([]byte, []byte) {
 
+	cursor, err := db.Cursor(blockkey)
+	if err != nil {
+		log.Error(err)
+	}
 	key := []byte{}
 	value := []byte{}
-	iter := db.NewIterator(util.BytesPrefix([]byte("bk-")), nil)
-	/**/
-
-	ok := iter.Last()
-	if ok {
-		key = iter.Key()
-		value = iter.Value()
+	for ok := cursor.Last(); ok; ok = cursor.Next() {
+		dbkey, _ := cursor.Key()
+		value, _ = cursor.Value()
+		key = dbkey.Bytes()
 
 	}
-	iter.Release()
 
 	return key, value
 }

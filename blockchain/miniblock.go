@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/Metchain/Metblock/db/database"
 	"github.com/Metchain/Metblock/domain"
 	"github.com/Metchain/Metblock/heavyhash"
 	"github.com/Metchain/Metblock/mconfig"
 	pb "github.com/Metchain/Metblock/proto"
-	"github.com/btcsuite/goleveldb/leveldb"
 	"google.golang.org/protobuf/proto"
-	"log"
+
 	"os"
 	"strconv"
 	"strings"
@@ -49,14 +49,17 @@ func GetBlockDB(height int) ([]byte, []byte) {
 
 }
 
-func (b *MiniBlock) BlockToDB(db *leveldb.DB) error {
-	kln := 64 - len(strconv.Itoa(int(b.height)))
-	key := "bk-" + strings.Repeat("0", kln) + strconv.Itoa(int(b.height))
+var MBlockkey = database.MakeBucket([]byte("block"))
+var Utxokey = database.MakeBucket([]byte("utxo_tx"))
+
+func (b *MiniBlock) BlockToDB(db database.Database) error {
+
+	key := strconv.Itoa(int(b.height))
 	b.MarshalJSON()
 	m, _ := json.Marshal(b)
-	log.Printf("Block accepted. Current Block Height:", b.height)
-	batch := new(leveldb.Batch)
-	batch.Put([]byte(key), m)
+	log.Infof("Block accepted. Current Block Height:", b.height)
+	batch, _ := db.Begin()
+	batch.Put(MBlockkey.Key([]byte(key)), m)
 
 	for _, tx := range b.transactions {
 
@@ -76,21 +79,19 @@ func (b *MiniBlock) BlockToDB(db *leveldb.DB) error {
 
 		jsonUtxo, err := proto.Marshal(utxo)
 		if err != nil {
-			log.Println("This shouldn't happen. Please check version")
+			log.Criticalf("This shouldn't happen. Please check version")
 			os.Exit(36)
 		}
 		key := fmt.Sprintf("%x", tx.txhash)
 
-		batch.Put([]byte(key), jsonUtxo)
-
-		//log.Println("Added Transactions to UTXO DATABASE:", tx.txhash, " :: ", fmt.Sprintf("%s", jsonUtxo))
+		batch.Put(Utxokey.Key([]byte(key)), jsonUtxo)
 
 		if tx.txtype == 3 {
 			nftpb := new(pb.NFTResponse)
-			nftkey := "NFT-" + fmt.Sprintf("%v", tx.value)
-			nftsd, err := db.Get([]byte(nftkey), nil)
+			nftkey := fmt.Sprintf("%v", tx.value)
+			nftsd, err := db.Get(nftLayerkey.Key([]byte(nftkey)))
 			if err != nil {
-				log.Println("Error Locating NFT :", nftkey, nftsd)
+				log.Infof("Error Locating NFT :", nftkey, nftsd)
 			}
 
 			nftpb.NFTWallet = tx.recipientBlockchainAddress
@@ -101,15 +102,11 @@ func (b *MiniBlock) BlockToDB(db *leveldb.DB) error {
 			nftpb.Blockhash = fmt.Sprintf("%x", b.currentHash)
 			jsonnft, err := proto.Marshal(nftpb)
 			if err != nil {
-				log.Println("This should happen at all. :", err)
+				log.Criticalf("This should happen at all. :", err)
 				os.Exit(123456789)
 			}
-			batch.Put([]byte(nftkey), jsonnft)
+			batch.Put(nftLayerkey.Key([]byte(nftkey)), jsonnft)
 		}
-
-		// Subtract balance from senders wallet.
-
-		//Adding it to wallet db
 
 	}
 	wallets := make(map[string]*pb.UTXOWalletBalanceRespose, 0)
@@ -117,32 +114,18 @@ func (b *MiniBlock) BlockToDB(db *leveldb.DB) error {
 	for tempkey, val := range wallets {
 		jsonWalletSender, err := proto.Marshal(val)
 		if err != nil {
-			log.Println("Error. This shouldn't happen")
+			log.Infof("Error. This shouldn't happen")
 			os.Exit(8888)
 		}
-		batch.Put([]byte(tempkey), jsonWalletSender)
-		log.Printf("Added Wallet: " + val.WalletAddress + "\n Balance: " + val.Amount + "\n\n")
+		batch.Put(utxo_walletkey.Key([]byte(tempkey)), jsonWalletSender)
+		log.Infof("Added Wallet: " + val.WalletAddress + "\n Balance: " + val.Amount + "\n\n")
 	}
-	err := db.Write(batch, nil)
+	err := batch.Commit()
 	if err != nil {
 		fmt.Println("Error: ", err)
 		return err
 	}
 	return nil
-}
-
-func (b *MiniBlock) Print() {
-	log.Printf("Height 				%d\n", b.height)
-	log.Printf("Timestamp			%d\n", b.timestamp)
-	log.Printf("Nonce				%d\n", b.nonce)
-	log.Printf("Megablock				%d\n", b.nonce)
-	log.Printf("Metblock				%d\n", b.nonce)
-	log.Printf("Prev_Hash			%x\n", b.previousHash)
-	log.Printf("Current_Hash          %x\n", b.currentHash)
-	//fmt.Printf("Transactions			%s\n", b.Transactions)
-	for _, t := range b.transactions {
-		t.Print()
-	}
 }
 
 func Hash(previousHash []byte, timestamp int64, nonce uint64) [32]byte {
@@ -211,7 +194,7 @@ func LastMiniBlock(mc *domain.Metchain) *MBlock {
 	return block
 }
 
-func CreateMiniBlock(b *pb.RpcBlock, db *leveldb.DB, bc *Blockchain) ([32]byte, error, float64) {
+func CreateMiniBlock(b *pb.RpcBlock, db database.Database, bc *Blockchain) ([32]byte, error, float64) {
 	Temptimestamp := time.Now().UnixMilli()
 	Tempoldntime := bc.LastRPCBlock.Timestamp + 6000
 	if bc.LastRPCBlock.Timestamp > Temptimestamp || Tempoldntime >= Temptimestamp {
@@ -252,7 +235,6 @@ func CreateMiniBlock(b *pb.RpcBlock, db *leveldb.DB, bc *Blockchain) ([32]byte, 
 
 	nftre := []*Transaction{}
 	if len(bc.NFTStake) >= 1 {
-		log.Println("Entered Staking")
 		nftre = bc.CheckNFTRewards()
 
 	}
@@ -333,7 +315,7 @@ func (lb *LastRPCBlock) BlockToRPCLastBlock(nb *MiniBlock) *LastRPCBlock {
 	}
 
 }
-func (bc *Blockchain) LastMiniBlockRPC(db *leveldb.DB) error {
+func (bc *Blockchain) LastMiniBlockRPC(db database.Database) error {
 	lbk, lbv := domain.LastBlockRPC(db)
 	genkey := ("bk-" + strings.Repeat("0", 64))
 	nbk := fmt.Sprintf("%v", string(lbk))

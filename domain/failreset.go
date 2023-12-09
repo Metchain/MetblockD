@@ -1,21 +1,26 @@
 package domain
 
 import (
-	"github.com/Metchain/Metblock/mconfig"
-	"log"
+	"github.com/Metchain/Metblock/mconfig/infraconfig"
+
 	"os"
+	"path/filepath"
 )
 
-func DBReset() bool {
-	err := os.RemoveAll(mconfig.GetDBDir())
+func DBReset(cfg *infraconfig.Config) bool {
+	err := os.RemoveAll(databasePath(cfg))
 	if err == nil {
-		log.Println("Database Successfully Reset")
+		log.Infof("Database Successfully Reset")
 		return true
 
 	}
-	log.Println(err)
+	log.Infof("Error reseting db", err)
 
 	// Add exit code with Manual
-	os.Exit(0)
+
 	return false
+}
+
+func databasePath(cfg *infraconfig.Config) string {
+	return filepath.Join(cfg.AppDir, cfg.DataDir)
 }

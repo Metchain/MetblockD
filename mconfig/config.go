@@ -5,22 +5,28 @@ import (
 	"github.com/Metchain/Metblock/utils/appdir"
 	"log"
 	"net"
-	"strconv"
 )
 
 const (
-	AppName        = "Metchain"
-	DbDir          = "data"
-	DbDirTestnet   = "dataverify"
-	MainnetPortRPC = 14031
-	MainnetPortP2p = 14041
-	RPCMaxClients  = 125
-	MinimumStaking = 15000
-	Lock3Month     = 131400
-	Lock6Month     = 262800
-	Lock9Month     = 350400
-	Lock12Month    = 525600
-	DeadWallet     = "metchain:000000000000000000000000000000000000000000000000000000000000DEAD"
+	AppName            = "Metchain"
+	DbDir              = "data"
+	DbDirTestnet       = "dataverify"
+	MainnetPortRPC     = "14041"
+	MainnetPortP2p     = "14031"
+	RPCMaxClients      = 125
+	MinimumStaking     = 15000
+	Lock3Month         = 131400
+	Lock6Month         = 262800
+	Lock9Month         = 350400
+	Lock12Month        = 525600
+	DeadWallet         = "metchain:000000000000000000000000000000000000000000000000000000000000DEAD"
+	MINING_SENDER      = "METCHAIN_Blockchain"
+	MINING_REWARD      = 0.3
+	MINING_REWARD_MEGA = 3
+	MINING_REWARD_MET  = 15
+	MINING_TIMER_SEC   = 10
+
+	STAKING_SENDER = "Coinbase"
 )
 
 type Config struct {
@@ -32,9 +38,9 @@ type Config struct {
 
 func GetCfg() *Config {
 	cfg := &Config{}
-	cfg.RPCPORT = []string{":" + strconv.Itoa(MainnetPortRPC)}
-	cfg.RPCListeners = []string{":" + strconv.Itoa(MainnetPortRPC)}
-	cfg.Listeners = []string{":" + strconv.Itoa(MainnetPortP2p)}
+	cfg.RPCPORT = []string{":" + MainnetPortRPC}
+	cfg.RPCListeners = []string{":" + MainnetPortRPC}
+	cfg.Listeners = []string{":" + MainnetPortP2p}
 	cfg.RPCMaxClients = RPCMaxClients
 	return cfg
 }

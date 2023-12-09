@@ -2,101 +2,93 @@ package domain
 
 import (
 	"fmt"
-	"github.com/Metchain/Metblock/mconfig"
-	"github.com/btcsuite/goleveldb/leveldb"
-	"log"
-	"strings"
+	"github.com/Metchain/Metblock/db/database"
+	"github.com/Metchain/Metblock/mconfig/infraconfig"
 )
 
 type Metchain struct {
-	Dbcon       *leveldb.DB
+	Db          database.Database
 	Blockheight uint64
 	Cdiff       uint64
 }
 
-func GenesisConsensusDBCreate(gc []byte) bool {
-	d := mconfig.GetDBDir()
+func GenesisConsensusDBCreate(gc []byte, db database.Database) bool {
 
-	log.Println("Generating Genesis Block")
-	db, err := leveldb.OpenFile(d, nil)
-	genkey := "bk-" + strings.Repeat("0", 64)
-	err = db.Put([]byte(genkey), gc, nil)
+	log.Infof("Generating Genesis Block")
+
+	err := db.Put(genkey, gc)
 	if err != nil {
-		fmt.Println("Error: ", err)
+		log.Infof("Error: ", err)
 	}
-	db.Close()
+
 	return true
 }
 
-func VerifyGenesisConsensusDB(gc []byte) (bool, *Metchain) {
-	d := mconfig.GetDBDir()
-	log.Println(d)
+func VerifyGenesisConsensusDB(gc []byte, db database.Database, cfg *infraconfig.Config) *Metchain {
 
-	genkey := "bk-" + strings.Repeat("0", 64)
-	log.Println("Confirming Genesis Block")
+	log.Infof("Confirming Genesis Block")
 	metch := new(Metchain)
-	db, err := leveldb.OpenFile(d, nil)
 
-	if err != nil {
-		log.Println("Error Opening DB: ", err)
+	metch.Db = db
 
-	}
-	metch.Dbcon = db
-	data, err := db.Get([]byte(genkey), nil)
-	if err != nil {
-		log.Println("Error Reading DB: ", err)
-	}
+	data, err := db.Get(genkey)
 	verr := 0
+
+	if err != nil {
+		log.Infof("Error Reading DB: ", err)
+
+	}
+
 	gn := ReadTx(gc)
 	b := ReadTx(data)
 
 	if gn.Height == b.Height {
-		log.Println("DB: Block Height Verified")
+		log.Infof("DB: Block Height Verified")
 	} else {
 		verr = 1
 	}
 	if gn.Timestamp == b.Timestamp {
-		log.Println("DB: Block Timestamp Verified")
+		log.Infof("DB: Block Timestamp Verified")
 	} else {
 		verr = 1
 	}
 	if gn.Nonce == b.Nonce {
-		log.Println("DB: Block Nonce Verified")
+		log.Infof("DB: Block Nonce Verified")
 	} else {
 		verr = 1
 	}
 
 	if gn.PreviousHash == b.PreviousHash {
-		log.Println("DB: Block PreviousHash Verified")
+		log.Infof("DB: Block PreviousHash Verified")
 	} else {
 		verr = 1
 	}
 
 	if fmt.Sprintf("%x", gn.Merkleroot) == fmt.Sprintf("%x", b.Merkleroot) {
-		log.Println("DB: Block Merkleroot Verified")
+		log.Infof("DB: Block Merkleroot Verified")
 	} else {
 		verr = 1
 	}
 
 	if fmt.Sprintf("%x", gn.Transaction) == fmt.Sprintf("%x", b.Transaction) {
-		log.Println("DB: Block Transaction Verified")
+		log.Infof("DB: Block Transaction Verified")
 	} else {
 		verr = 1
 	}
 	if verr == 1 {
-		DBReset()
-		GenesisConsensusDBCreate(gc)
+		DBReset(cfg)
+		GenesisConsensusDBCreate(gc, db)
 		verr = 0
 	}
 	if verr == 0 {
-		return true, metch
+		return metch
 	} else {
 
-		log.Println("ConsensusError: There is an unexpected error. Make sure you have the latest version")
-		defer metch.Dbcon.Close()
+		log.Infof("ConsensusError: There is an unexpected error. Make sure you have the latest version")
+		defer metch.Db.Close()
 		//Add exit code with Manual
 		//os.Exit(0)
-		return false, nil
+		return nil
 	}
 
 }

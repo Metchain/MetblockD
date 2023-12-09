@@ -2,11 +2,11 @@ package blockchain
 
 import (
 	"fmt"
+	"github.com/Metchain/Metblock/db/database"
 	"github.com/Metchain/Metblock/mconfig"
 	pb "github.com/Metchain/Metblock/proto"
-	"github.com/btcsuite/goleveldb/leveldb"
 	"google.golang.org/protobuf/proto"
-	"log"
+
 	"math"
 	"strconv"
 	"time"
@@ -61,7 +61,7 @@ func (bc *Blockchain) StakeNFTMet(sender string, seed string, value string, nft 
 	return false
 }
 func (bc *Blockchain) verifyBalance(f float64, sender string) error {
-	walletcheck := GetWalletBalnace(sender, bc.Dbcon)
+	walletcheck := GetWalletBalnace(sender, bc.Db)
 	walletinfo := new(pb.WalletBalanceRespose)
 	proto.Unmarshal(walletcheck, walletinfo)
 	bal, _ := strconv.ParseFloat(walletinfo.Amount, 64)
@@ -73,21 +73,26 @@ func (bc *Blockchain) verifyBalance(f float64, sender string) error {
 	}
 	return nil
 }
+
+var stakedkey = database.MakeBucket([]byte("layer2_nft_staked"))
+
 func (bc *Blockchain) StakedNFT(b *MiniBlock, pool []*NFTStaking) []*Transaction {
-	batch := new(leveldb.Batch)
+
+	batch, _ := bc.Db.Begin()
+	defer batch.RollbackUnlessClosed()
 	txs := []*Transaction{}
 	for _, z := range pool {
 
-		if z.MetCoin >= 15000 {
+		if z.MetCoin >= mconfig.MinimumStaking {
 
-			tempkey := "staked-" + fmt.Sprintf("%v", z.NFT)
+			tempkey := stakedkey.Key([]byte(fmt.Sprintf("%v", z.NFT)))
 			nftid := fmt.Sprintf("%v", z.NFT)
 			t := NewTransaction(z.WalletAddress, STAKING_SENDER+"( MET NFT #"+nftid+")", float32(z.MetCoin))
 			sn := StakedInfo(t.txhash, b, z)
 			staker, err := proto.Marshal(sn)
 
 			if err != nil {
-				log.Fatalf("Error. This shouldn't happen: %v", err)
+				log.Criticalf("Error. This shouldn't happen: %v", err)
 
 			} else {
 
@@ -95,17 +100,17 @@ func (bc *Blockchain) StakedNFT(b *MiniBlock, pool []*NFTStaking) []*Transaction
 				bc.Txpool = append(bc.Txpool, t)
 				sn := new(pb.StakeNFT)
 
-				batch.Put([]byte(tempkey), staker)
+				batch.Put(tempkey, staker)
 				bc.NFTStake = append(bc.NFTStake, sn)
 			}
 
 		}
 	}
-	db := bc.Dbcon
-	err := db.Write(batch, nil)
+
+	err := batch.Commit()
 
 	if err != nil {
-		log.Fatalf("Error while adding staking NFT: ", err)
+		log.Criticalf("Error while adding staking NFT: ", err)
 
 	}
 	return txs
@@ -135,24 +140,27 @@ func (bc *Blockchain) verifyNFt(sender string, nft string) bool {
 	return false
 }
 
+var nftLayerkey = database.MakeBucket([]byte("layer2_nft"))
+
 func (bc *Blockchain) VerifyNFT(wx string) []byte {
-	wx = "NFT-" + wx
-	db := bc.Dbcon
-	txs, err := db.Get([]byte(wx), nil)
+
+	txs, err := bc.Db.Get(nftLayerkey.Key([]byte(wx)))
 	if err != nil {
-		log.Println("Error finding the Wallet")
+		log.Infof("Error locating the Wallet Address")
 		return nil
 	}
 
 	return txs
 }
+
+var stakednftbucket = database.MakeBucket([]byte("layer2_nft_staked"))
+
 func (bc *Blockchain) GetStakedNFT() []*pb.StakeNFT {
 	i := 1
-	db := bc.Dbcon
+	db := bc.Db
 	Staked := []*pb.StakeNFT{}
 	for i <= 500 {
-		kp := "staked-" + fmt.Sprintf("%v", i)
-		m, err := db.Get([]byte(kp), nil)
+		m, err := db.Get(stakednftbucket.Key([]byte(fmt.Sprintf("%v", i))))
 		if err == nil {
 
 			dbnft := new(pb.StakeNFT)
@@ -160,7 +168,7 @@ func (bc *Blockchain) GetStakedNFT() []*pb.StakeNFT {
 			if dbnft.LockTime == 0 {
 				dbnft, err = bc.ConverOldNFTToNew(m, dbnft)
 				if err != nil {
-					log.Printf("Error while staking nft : %s \n", err)
+					log.Infof("Error while staking nft : %s \n", err)
 				}
 			}
 			Staked = append(Staked, dbnft)
@@ -169,7 +177,7 @@ func (bc *Blockchain) GetStakedNFT() []*pb.StakeNFT {
 
 		i = i + 1
 	}
-	log.Println("Checking for Staked NFT's")
+	log.Info("Checking for Staked NFT's")
 
 	return Staked
 }
@@ -219,25 +227,25 @@ func (bc *Blockchain) CheckNFTRewards() []*Transaction {
 
 					reward, err = bc.calculatereward(2, s.StakeAmount)
 					if err != nil {
-						log.Fatalf("Superrare NFT Reward Err: %s", err)
+						log.Criticalf("Superrare NFT Reward Err: %s", err)
 					}
 				} else if locktime == mconfig.Lock6Month {
 					reward, err = bc.calculatereward(5, s.StakeAmount)
 					if err != nil {
-						log.Fatalf("Superrare NFT Reward Err: %s", err)
+						log.Criticalf("Superrare NFT Reward Err: %s", err)
 					}
 				} else if locktime == mconfig.Lock9Month {
 					reward, err = bc.calculatereward(8, s.StakeAmount)
 					if err != nil {
-						log.Fatalf("Superrare NFT Reward Err: %s", err)
+						log.Criticalf("Superrare NFT Reward Err: %s", err)
 					}
 				} else if locktime == mconfig.Lock12Month {
 					reward, err = bc.calculatereward(11, s.StakeAmount)
 					if err != nil {
-						log.Fatalf("Superrare NFT Reward Err: %s", err)
+						log.Criticalf("Superrare NFT Reward Err: %s", err)
 					}
 				} else {
-					log.Printf("Unexpect error in %v NFT \n", s.NFTid)
+					log.Infof("Unexpect error in %v NFT \n", s.NFTid)
 					return nil
 				}
 			} else if CheckNFT(nfts.Rare, s.NFTid) {
@@ -245,25 +253,25 @@ func (bc *Blockchain) CheckNFTRewards() []*Transaction {
 
 					reward, err = bc.calculatereward(1.7, s.StakeAmount)
 					if err != nil {
-						log.Fatalf("Rare NFT Reward Err: %s", err)
+						log.Criticalf("Rare NFT Reward Err: %s", err)
 					}
 				} else if locktime == mconfig.Lock6Month {
 					reward, err = bc.calculatereward(4.25, s.StakeAmount)
 					if err != nil {
-						log.Fatalf("Rare NFT Reward Err: %s", err)
+						log.Criticalf("Rare NFT Reward Err: %s", err)
 					}
 				} else if locktime == mconfig.Lock9Month {
 					reward, err = bc.calculatereward(6.8, s.StakeAmount)
 					if err != nil {
-						log.Fatalf("Rare NFT Reward Err: %s", err)
+						log.Criticalf("Rare NFT Reward Err: %s", err)
 					}
 				} else if locktime == mconfig.Lock12Month {
 					reward, err = bc.calculatereward(9.35, s.StakeAmount)
 					if err != nil {
-						log.Fatalf("Rare NFT Reward Err: %s", err)
+						log.Criticalf("Rare NFT Reward Err: %s", err)
 					}
 				} else {
-					log.Printf("Unexpect error in %v NFT \n", s.NFTid)
+					log.Infof("Unexpect error in %v NFT \n", s.NFTid)
 					return nil
 				}
 			} else if CheckNFT(nfts.LessCommon, s.NFTid) {
@@ -271,25 +279,25 @@ func (bc *Blockchain) CheckNFTRewards() []*Transaction {
 
 					reward, err = bc.calculatereward(1.3, s.StakeAmount)
 					if err != nil {
-						log.Fatalf("LessCommon NFT Reward Err: %s", err)
+						log.Criticalf("LessCommon NFT Reward Err: %s", err)
 					}
 				} else if locktime == mconfig.Lock6Month {
 					reward, err = bc.calculatereward(3.25, s.StakeAmount)
 					if err != nil {
-						log.Fatalf("LessCommon NFT Reward Err: %s", err)
+						log.Criticalf("LessCommon NFT Reward Err: %s", err)
 					}
 				} else if locktime == mconfig.Lock9Month {
 					reward, err = bc.calculatereward(5.2, s.StakeAmount)
 					if err != nil {
-						log.Fatalf("LessCommon NFT Reward Err: %s", err)
+						log.Criticalf("LessCommon NFT Reward Err: %s", err)
 					}
 				} else if locktime == mconfig.Lock12Month {
 					reward, err = bc.calculatereward(7.15, s.StakeAmount)
 					if err != nil {
-						log.Fatalf("LessCommon NFT Reward Err: %s", err)
+						log.Criticalf("LessCommon NFT Reward Err: %s", err)
 					}
 				} else {
-					log.Printf("Unexpect error in %v NFT \n", s.NFTid)
+					log.Infof("Unexpect error in %v NFT \n", s.NFTid)
 					return nil
 				}
 			} else if CheckNFT(nfts.Common, s.NFTid) {
@@ -297,25 +305,25 @@ func (bc *Blockchain) CheckNFTRewards() []*Transaction {
 
 					reward, err = bc.calculatereward(1, s.StakeAmount)
 					if err != nil {
-						log.Fatalf("Common NFT Reward Err: %s", err)
+						log.Criticalf("Common NFT Reward Err: %s", err)
 					}
 				} else if locktime == mconfig.Lock6Month {
 					reward, err = bc.calculatereward(2.5, s.StakeAmount)
 					if err != nil {
-						log.Fatalf("Common NFT Reward Err: %s", err)
+						log.Criticalf("Common NFT Reward Err: %s", err)
 					}
 				} else if locktime == mconfig.Lock9Month {
 					reward, err = bc.calculatereward(4, s.StakeAmount)
 					if err != nil {
-						log.Fatalf("Common NFT Reward Err: %s", err)
+						log.Criticalf("Common NFT Reward Err: %s", err)
 					}
 				} else if locktime == mconfig.Lock12Month {
 					reward, err = bc.calculatereward(5.5, s.StakeAmount)
 					if err != nil {
-						log.Fatalf("Common NFT Reward Err: %s", err)
+						log.Criticalf("Common NFT Reward Err: %s", err)
 					}
 				} else {
-					log.Printf("Unexpect error in %v NFT \n", s.NFTid)
+					log.Infof("Unexpect error in %v NFT \n", s.NFTid)
 					return nil
 				}
 			}
@@ -324,13 +332,13 @@ func (bc *Blockchain) CheckNFTRewards() []*Transaction {
 			ntxpool = append(ntxpool, tx)
 			am, err := strconv.ParseFloat(s.StakeAmount, 64)
 			if err != nil {
-				log.Fatalf("Error processing staking amount: %s", err)
+				log.Criticalf("Error processing staking amount: %s", err)
 			}
 			oldtx := NewTransaction(STAKING_SENDER+"( MET NFT #"+s.NFTid+")", s.NFTSender, float32(am))
 			ntxpool = append(ntxpool, oldtx)
 
-			kp := "staked-" + fmt.Sprintf("%v", s.NFTid)
-			bc.Dbcon.Delete([]byte(kp), nil)
+			kp := fmt.Sprintf("%v", s.NFTid)
+			bc.Db.Delete(stakednftbucket.Key([]byte(kp)))
 
 		}
 
@@ -343,7 +351,7 @@ func (bc *Blockchain) CheckNFTRewards() []*Transaction {
 func (bc *Blockchain) calculatereward(lt float32, met string) (float32, error) {
 	fm, err := strconv.ParseFloat(met, 64)
 	if err != nil {
-		log.Fatalf("Error calculating reward: %s", err)
+		log.Criticalf("Error calculating reward: %s", err)
 	}
 	return ((lt * float32(fm)) / 100), err
 }
@@ -364,7 +372,7 @@ func (bc *Blockchain) ClearStake(ls []*int64) {
 			}
 		}
 		if err != nil {
-			log.Fatalf("Error in clearing staking pool : %s", err)
+			log.Criticalf("Error in clearing staking pool : %s", err)
 		}
 	}
 	if len(ls) >= 1 {
@@ -372,10 +380,10 @@ func (bc *Blockchain) ClearStake(ls []*int64) {
 	}
 	for _, v := range ls {
 
-		kp := "staked-" + fmt.Sprintf("%v", *v)
-		err := bc.Dbcon.Delete([]byte(kp), nil)
+		kp := fmt.Sprintf("%v", *v)
+		err := bc.Db.Delete(stakednftbucket.Key([]byte(kp)))
 		if err != nil {
-			log.Fatalf("Error in clearing staking pool : %s", err)
+			log.Criticalf("Error in clearing staking pool : %s", err)
 		}
 	}
 }

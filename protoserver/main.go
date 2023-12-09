@@ -5,12 +5,14 @@ import (
 	"github.com/Metchain/Metblock/blockchain"
 	"github.com/Metchain/Metblock/domain"
 	pb "github.com/Metchain/Metblock/proto"
+	"github.com/Metchain/Metblock/utils/logger"
 	"google.golang.org/grpc"
 	_ "google.golang.org/grpc/encoding/gzip"
-	"log"
 	"net"
 	"sync"
 )
+
+var logrpc = logger.RegisterSubSystem("METD-RPC-Network")
 
 // define the port
 const (
@@ -18,6 +20,7 @@ const (
 )
 
 type rpcServer struct {
+	Server
 	pb.UnimplementedRPCServer
 	gRPCServer
 	*domain.Metchain
@@ -25,13 +28,12 @@ type rpcServer struct {
 }
 
 type p2pServer struct {
+	Server
 	pb.UnimplementedP2PServer
 	gRPCServer
 	*domain.Metchain
 	*blockchain.Blockchain
 }
-
-const RPCMaxMessageSize = 1024 * 1024 * 1024
 
 type gRPCServer struct {
 	listeningAddresses []string
@@ -51,11 +53,12 @@ func newGRPCServer() *gRPCServer {
 	}
 }
 
-func RPCServer(mc *domain.Metchain, bc *blockchain.Blockchain) *rpcServer {
+func RPCServer(listen []string, maxc int, mc *domain.Metchain, bc *blockchain.Blockchain) (*rpcServer, error) {
 	//listen on the port
-	lis, err := net.Listen("tcp", port)
+	lis, err := net.Listen("tcp", listen[0])
+
 	if err != nil {
-		log.Fatalf("Failed to start server %v", err)
+		logrpc.Criticalf("Failed to start server %v", err)
 	}
 	// create a new gRPC server
 	newGRPCServer := newGRPCServer()
@@ -63,12 +66,14 @@ func RPCServer(mc *domain.Metchain, bc *blockchain.Blockchain) *rpcServer {
 	rpcServers := &rpcServer{gRPCServer: *newGRPCServer, Metchain: mc, Blockchain: bc}
 	pb.RegisterRPCServer(newGRPCServer.server, rpcServers)
 
-	log.Printf("Server started ats %v", lis.Addr())
+	logrpc.Infof("Server started ats %v", lis.Addr())
 	//list is the port, the grpc server needs to start there
+
 	if err := newGRPCServer.server.Serve(lis); err != nil {
-		log.Fatalf("Failed to start: %v", err)
+		logrpc.Criticalf("Failed to start: %v", err)
 	}
-	return rpcServers
+
+	return rpcServers, nil
 }
 
 type grpcStream interface {
@@ -97,7 +102,7 @@ func (s *rpcServer) MessageStream(stream pb.RPC_MessageStreamServer) error {
 		reqs.Payload = payload
 		err := stream.Send(reqs)
 		if err != nil {
-			log.Printf("Error Sending Block Info")
+			logrpc.Infof("Error Sending Block Info")
 		}
 
 	}
@@ -111,7 +116,7 @@ func (s *rpcServer) MessageStream(stream pb.RPC_MessageStreamServer) error {
 		reqs.Payload = payloads
 		err := stream.Send(reqs)
 		if err != nil {
-			log.Println("Error Sending Block Submit Response")
+			logrpc.Infof("Error Sending Block Submit Response")
 		}
 
 	}
@@ -132,10 +137,10 @@ func (s *rpcServer) MessageStream(stream pb.RPC_MessageStreamServer) error {
 		reqs.Payload = payloads
 		err := stream.Send(reqs)
 		if err != nil {
-			log.Println("Error Sending Block Submit Response")
+			logrpc.Infof("Error Sending Block Submit Response")
 		}
 	}
-	//log.Printf("checking the recivied payload : %v", req.String())
+
 	return nil
 }
 
@@ -176,7 +181,7 @@ func NewRPCBlockLevelParents(lb *blockchain.DomainBlock) []*pb.RpcBlockLevelPare
 
 func (s *rpcServer) GetBlockSubmitResponses(block *pb.SubmitBlockRequestMessage) *pb.SubmitBlockResponseMessage {
 
-	hash, err, reward := blockchain.CreateMiniBlock(block.Block, s.Dbcon, s.Blockchain)
+	hash, err, reward := blockchain.CreateMiniBlock(block.Block, s.Db, s.Blockchain)
 	ConesusHash := fmt.Sprintf("%x", hash)
 	ConesusReward := fmt.Sprintf("%.2f", reward)
 	if err != nil {

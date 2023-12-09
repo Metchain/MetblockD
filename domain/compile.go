@@ -2,7 +2,6 @@ package domain
 
 import (
 	"encoding/json"
-	"log"
 )
 
 type domaintx struct {
@@ -72,7 +71,7 @@ func ReadTxn(m []byte) *domaintx {
 	n.Nonce = v.Nonce
 	n.PreviousHash = v.PreviousHash
 	n.Transaction = v.Transaction
-	log.Printf("Check message: %s", m)
+	log.Infof("Check message: %s", m)
 	n.BlockType = v.BlockType
 
 	return n

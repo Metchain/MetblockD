@@ -4,17 +4,19 @@ import (
 	"github.com/Metchain/Metblock/blockchain"
 	"github.com/Metchain/Metblock/domain"
 	pb "github.com/Metchain/Metblock/proto"
+	"github.com/Metchain/Metblock/utils/logger"
 	"google.golang.org/grpc/peer"
-	"log"
 	"net"
 )
 
-func P2PServer(mc *domain.Metchain, bc *blockchain.Blockchain) *p2pServer {
+var logp2p = logger.RegisterSubSystem("METD-P2P-Network")
+
+func P2PServer(listen []string, mc *domain.Metchain, bc *blockchain.Blockchain) (*p2pServer, error) {
 	//listen on the port
 
-	lis, err := net.Listen("tcp", "localhost:14031")
+	lis, err := net.Listen("tcp", "localhost"+listen[0])
 	if err != nil {
-		log.Fatalf("Failed to start server %v", err)
+		logp2p.Criticalf("Failed to start server %v", err)
 	}
 	// create a new gRPC server
 	newGRPCServer := newGRPCServer()
@@ -22,12 +24,20 @@ func P2PServer(mc *domain.Metchain, bc *blockchain.Blockchain) *p2pServer {
 	p2pServers := &p2pServer{gRPCServer: *newGRPCServer, Metchain: mc, Blockchain: bc}
 	pb.RegisterP2PServer(newGRPCServer.server, p2pServers)
 
-	log.Printf("Server started at %v", lis.Addr())
+	logp2p.Info("Server started at %v", lis.Addr())
 	//list is the port, the grpc server needs to start there
-	if err := newGRPCServer.server.Serve(lis); err != nil {
-		log.Fatalf("Failed to start: %v", err)
+
+	go func() error {
+		if err := newGRPCServer.server.Serve(lis); err != nil {
+
+			return err
+		}
+		return nil
+	}()
+	if err != nil {
+		logp2p.Criticalf("Failed to start: %v", err)
 	}
-	return p2pServers
+	return p2pServers, nil
 }
 
 func (s *p2pServer) MessageStream(stream pb.P2P_MessageStreamServer) error {
@@ -47,7 +57,7 @@ func (s *p2pServer) MessageStream(stream pb.P2P_MessageStreamServer) error {
 
 		s.Blockchain.MatchDomainBlockToP2PBlock(template.GetP2PBlockWithTrustedDataRequestMessage(), p.Addr)
 	}
-	log.Println("Request recieved")
+	logp2p.Infof("Request recieved")
 	template := &pb.MetchainMessage{
 		Payload: &pb.MetchainMessage_P2PBlockWithTrustedDataResponseMessage{
 			P2PBlockWithTrustedDataResponseMessage: s.Blockchain.ConvertGroupToSecureDomainInfo(s.Blockchain.ConvertBlockToDomainGroupBlock(s.Blockchain.ConvertBlockToDomainBlock())),
@@ -56,7 +66,7 @@ func (s *p2pServer) MessageStream(stream pb.P2P_MessageStreamServer) error {
 
 	err = stream.Send(template)
 	if err != nil {
-		log.Printf("Error Sending Block Info: ", err)
+		logp2p.Infof("Error Sending Block Info: ", err)
 		return err
 	}
 	return nil

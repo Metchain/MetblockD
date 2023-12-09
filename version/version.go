@@ -10,8 +10,8 @@ const validCharacters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrs
 
 const (
 	appMajor uint = 0
-	appMinor uint = 12
-	appPatch uint = 13
+	appMinor uint = 1
+	appPatch uint = 06
 )
 
 // It MUST only contain characters from validCharacters.

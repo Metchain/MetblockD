@@ -3,21 +3,20 @@ package blockchain
 import (
 	"encoding/json"
 	"fmt"
-	"log"
+	"github.com/Metchain/Metblock/db/database"
+
 	"math/big"
 	"strconv"
 	"strings"
 
 	pb "github.com/Metchain/Metblock/proto"
-	"github.com/btcsuite/goleveldb/leveldb"
-	"github.com/btcsuite/goleveldb/leveldb/util"
 	"google.golang.org/protobuf/proto"
 )
 
 func (bc *Blockchain) AddWallet(wallet string) bool {
 
 	bc.Wallets = append(bc.Wallets, &WalletCreated{WalletAddress: wallet})
-	log.Println(wallet)
+	log.Infof(wallet)
 	return true
 }
 
@@ -33,24 +32,25 @@ func (wc *WalletCreated) MarshalJSON() ([]byte, error) {
 	})
 }
 
-func (bc *Blockchain) WalletToDB(db *leveldb.DB, nb *MiniBlock) error {
+func (bc *Blockchain) WalletToDB(db database.Database, nb *MiniBlock) error {
 
 	_, value := LastWallet(db)
 	vwall := new(pb.VWalletResponse)
 	proto.Unmarshal(value, vwall)
-	var key string
+	var key *database.Key
 	i := 1
-	kln := 63
+
 	if vwall != nil {
-		wid := int(vwall.Walletid) + 1
+
 		i = int(vwall.Walletid) + 1
-		kln = 64 - len(strconv.Itoa(wid))
 
 	}
-	batch := new(leveldb.Batch)
+	batch, _ := db.Begin()
+	defer batch.RollbackUnlessClosed()
 	for _, vw := range bc.Wallets {
-		key = "vwallet-" + strings.Repeat("0", kln) + strconv.Itoa(i)
-		wkey := "vwallethash-" + vw.WalletAddress
+		key = verifiedWalletidKey.Key([]byte(strconv.Itoa(i)))
+
+		wkey := utxo_walletkey.Key([]byte(vw.WalletAddress))
 		utxo := new(pb.VWalletResponse)
 		utxo.Walletid = uint64(i)
 		utxo.WalletAddress = vw.WalletAddress
@@ -58,49 +58,45 @@ func (bc *Blockchain) WalletToDB(db *leveldb.DB, nb *MiniBlock) error {
 		utxo.Lockhash = fmt.Sprintf("%x", Hash([]byte(fmt.Sprintf("%x", vw.WalletAddress)), nb.timestamp, nb.nonce))
 		m, _ := proto.Marshal(utxo)
 
-		batch.Put([]byte(key), m)
-		batch.Put([]byte(wkey), m)
+		batch.Put(key, m)
+		batch.Put(wkey, m)
 		i = i + 1
 	}
-	err := db.Write(batch, nil)
+	err := batch.Commit()
 	if err != nil {
-		log.Println("Error: ", err)
+		log.Infof("Error: ", err)
 		return err
 	}
 	bc.Wallets = bc.Wallets[:0]
 	return nil
 }
 
-func LastWallet(db *leveldb.DB) ([]byte, []byte) {
+var verifiedWalletidKey = database.MakeBucket([]byte("verified_wallets_by_id"))
+
+func LastWallet(db database.Database) ([]byte, []byte) {
 
 	key := []byte{}
 	value := []byte{}
-	iter := db.NewIterator(util.BytesPrefix([]byte("vwallet-")), nil)
-	/**/
 
-	ok := iter.Last()
-	if ok {
-		key = iter.Key()
-		value = iter.Value()
-
+	cursor, err := db.Cursor(verifiedWalletidKey)
+	if err != nil {
+		log.Error(err)
 	}
-	ok = iter.Next()
-	if ok {
-		key = iter.Key()
-		value = iter.Value()
+
+	for ok := cursor.Last(); ok; ok = cursor.Next() {
+		dbkey, _ := cursor.Key()
+		value, _ = cursor.Value()
+		key = dbkey.Bytes()
 
 	}
 
-	iter.Release()
 	utxo := new(pb.VWalletResponse)
 	proto.Unmarshal(value, utxo)
 
-	log.Printf("%v", string(key))
-	//os.Exit(1000)
 	return key, value
 }
 
-func UpdateWalletList(b *MiniBlock, db *leveldb.DB, wallets map[string]*pb.UTXOWalletBalanceRespose) map[string]*pb.UTXOWalletBalanceRespose {
+func UpdateWalletList(b *MiniBlock, db database.Database, wallets map[string]*pb.UTXOWalletBalanceRespose) map[string]*pb.UTXOWalletBalanceRespose {
 
 	for _, tx := range b.transactions {
 
@@ -145,7 +141,7 @@ func UpdateWalletList(b *MiniBlock, db *leveldb.DB, wallets map[string]*pb.UTXOW
 			wallets[sender].Wallettx = utxoinfo
 
 		} else {
-			sdb, err := db.Get([]byte(sender), nil)
+			sdb, err := db.Get(utxo_walletkey.Key([]byte(sender)))
 			if err == nil {
 				sinfo := new(pb.UTXOWalletBalanceRespose)
 				proto.Unmarshal(sdb, sinfo)
@@ -233,7 +229,7 @@ func UpdateWalletList(b *MiniBlock, db *leveldb.DB, wallets map[string]*pb.UTXOW
 			if !strings.Contains(tx.recipientBlockchainAddress, "metchain:") {
 				tx.recipientBlockchainAddress = "metchain:" + tx.recipientBlockchainAddress
 			}
-			rdb, err := db.Get([]byte(tx.recipientBlockchainAddress), nil)
+			rdb, err := db.Get(utxo_walletkey.Key([]byte(tx.recipientBlockchainAddress)))
 
 			if err == nil {
 				rinfo := new(pb.UTXOWalletBalanceRespose)

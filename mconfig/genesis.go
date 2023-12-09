@@ -88,5 +88,5 @@ func NewGen() *Genesis {
 			Txcoinbase: CoinBaseHex,
 		},
 	}
-	//return g
+
 }

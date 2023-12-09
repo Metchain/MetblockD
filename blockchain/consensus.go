@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"github.com/Metchain/Metblock/blockchain/consensus"
 	"github.com/Metchain/Metblock/mconfig"
-	"log"
 )
 
 type GenesisConsensus struct {
@@ -31,7 +30,7 @@ func GenesisGenrate() *GenesisConsensus {
 func (gc *GenesisConsensus) VerifyNonce() {
 	msg, err := consensus.VerfiyNonce(gc.Nonce)
 	if err {
-		log.Fatalf("%s : %s", msg, err)
+		log.Criticalf("%s : %s", msg, err)
 	}
 
 }
@@ -39,7 +38,7 @@ func (gc *GenesisConsensus) VerifyNonce() {
 func (gc *GenesisConsensus) VerifyTimestamp() {
 	msg, err := consensus.VerifyTimestamp(int(gc.Timestamp))
 	if err {
-		log.Fatalf("%s : %s", msg, err)
+		log.Criticalf("%s : %s", msg, err)
 	}
 
 }
@@ -47,7 +46,7 @@ func (gc *GenesisConsensus) VerifyTimestamp() {
 func (gc *GenesisConsensus) VerifyMessage() {
 	msg, err := consensus.VerifyMessage()
 	if err {
-		log.Fatalf("%s : %s", msg, err)
+		log.Criticalf("%s : %s", msg, err)
 	}
 
 }
@@ -55,21 +54,21 @@ func (gc *GenesisConsensus) VerifyMessage() {
 func (gc *GenesisConsensus) VerifyMerkleRoot() {
 	msg, err := consensus.VerifyMerkleRoot()
 	if err {
-		log.Fatalf("%s : %s", msg, err)
+		log.Criticalf("%s : %s", msg, err)
 	}
 }
 
 func (gc *GenesisConsensus) VerifyPreviousHash() {
 	msg, err := consensus.VerifyPreviousHash()
 	if err {
-		log.Fatalf("%s : %s", msg, err)
+		log.Criticalf("%s : %s", msg, err)
 	}
 }
 
 func (gc *GenesisConsensus) VerifyTransaction() {
 	msg, err := consensus.VerifyTransaction()
 	if err {
-		log.Fatalf("%s : %s", msg, err)
+		log.Criticalf("%s : %s", msg, err)
 	}
 }
 
