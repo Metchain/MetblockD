@@ -54,7 +54,7 @@ func LastBlockRPC(db database.Database) ([]byte, []byte) {
 
 	cursor, err := db.Cursor(blockkey)
 	if err != nil {
-		log.Error(err)
+		log.Info(err)
 	}
 	key := []byte{}
 	value := []byte{}

@@ -1,9 +1,5 @@
 package blockchain
 
-import (
-	"github.com/Metchain/Metblock/domain"
-)
-
 type DomainBlock struct {
 	Height         uint64
 	Timestamp      int64
@@ -15,20 +11,4 @@ type DomainBlock struct {
 	CurrentHash    [32]byte
 	UtxoCommitment string
 	Bits           uint64
-}
-
-func GetBlockTemplateBC(mc *domain.Metchain, addr string) *DomainBlock {
-	lb := LastMiniBlock(mc)
-
-	return &DomainBlock{
-		Height:         lb.Height,
-		Timestamp:      lb.Timestamp,
-		Nonce:          lb.Nonce,
-		PreviousHash:   lb.PreviousHash,
-		Metblock:       lb.Metblock,
-		Megablock:      lb.Megablock,
-		CurrentHash:    lb.CurrentHash,
-		UtxoCommitment: addr,
-		Bits:           lb.Bits,
-	}
 }

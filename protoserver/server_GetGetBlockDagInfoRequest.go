@@ -1,9 +1,6 @@
 package protoserver
 
-import (
-	pb "github.com/Metchain/Metblock/proto"
-)
-
+/*
 func (s *rpcServer) Server_GetGetBlockDagInfoRequest(stream pb.RPC_MessageStreamServer) {
 
 	log.Infof("Get block Dag Info")
@@ -27,3 +24,4 @@ func (s *rpcServer) GetGetBlockDagInfoResponse() *pb.GetBlockDagInfoResponseMess
 		BlockCount: s.Blockheight,
 	}
 }
+*/

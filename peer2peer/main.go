@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"github.com/Metchain/Metblock/mconfig"
-	pb "github.com/Metchain/Metblock/proto"
+	pb "github.com/Metchain/Metblock/protoserver/grpcserver/protowire"
 	"github.com/Metchain/Metblock/utils"
 	"github.com/btcsuite/goleveldb/leveldb"
 	"github.com/btcsuite/goleveldb/leveldb/util"

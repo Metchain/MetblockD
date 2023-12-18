@@ -68,11 +68,13 @@ func RPCServer(listen []string, maxc int, mc *domain.Metchain, bc *blockchain.Bl
 
 	logrpc.Infof("Server started ats %v", lis.Addr())
 	//list is the port, the grpc server needs to start there
-
-	if err := newGRPCServer.server.Serve(lis); err != nil {
-		logrpc.Criticalf("Failed to start: %v", err)
-	}
-
+	go func() error {
+		if err := newGRPCServer.server.Serve(lis); err != nil {
+			logrpc.Criticalf("Failed to start: %v", err)
+			return err
+		}
+		return nil
+	}()
 	return rpcServers, nil
 }
 

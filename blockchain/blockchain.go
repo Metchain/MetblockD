@@ -1,8 +1,9 @@
 package blockchain
 
 import (
+	"github.com/Metchain/Metblock/db/database"
 	"github.com/Metchain/Metblock/domain"
-	pb "github.com/Metchain/Metblock/proto"
+	pb "github.com/Metchain/Metblock/protoserver/grpcserver/protowire"
 
 	"sync"
 )
@@ -51,11 +52,15 @@ type WalletCreated struct {
 	LockHash      string
 }
 
-func Start(mc *domain.Metchain) *Blockchain {
+func Start(db database.Database) *Blockchain {
 
-	bc := new(Blockchain)
-	bc.Metchain = mc
-	err := bc.LastMiniBlockRPC(mc.Db)
+	bc := &Blockchain{
+		Metchain: &domain.Metchain{
+			Db: db,
+		},
+	}
+
+	err := bc.LastMiniBlockRPC()
 	if err != nil {
 		log.Criticalf("Error while processing the Latest RPC Block : %s", err)
 	}

@@ -4,8 +4,9 @@ import (
 	"errors"
 	"github.com/Metchain/Metblock/appmessage"
 	"github.com/Metchain/Metblock/blockchain"
-	"github.com/Metchain/Metblock/domain"
 	"github.com/Metchain/Metblock/mconfig/infraconfig"
+	"github.com/Metchain/Metblock/protoserver/grpcserver"
+	"github.com/Metchain/Metblock/protoserver/server"
 
 	"github.com/Metchain/Metblock/protoserver/id"
 	"github.com/Metchain/Metblock/protoserver/routerpkg"
@@ -17,10 +18,10 @@ type RouterInitializer func(*routerpkg.Router, *NetConnection)
 
 // NetConnection is a wrapper to a server connection for use by services external to NetAdapter
 type NetConnection struct {
-	connection            Connection
+	connection            server.Connection
 	id                    *id.ID
 	router                *routerpkg.Router
-	onDisconnectedHandler OnDisconnectedHandler
+	onDisconnectedHandler server.OnDisconnectedHandler
 	isRouterClosed        uint32
 }
 
@@ -32,9 +33,9 @@ type NetConnection struct {
 type NetAdapter struct {
 	cfg                  *infraconfig.Config
 	id                   *id.ID
-	p2pServer            *p2pServer
+	p2pServer            server.P2PServer
 	p2pRouterInitializer RouterInitializer
-	rpcServer            *rpcServer
+	rpcServer            server.Server
 	rpcRouterInitializer RouterInitializer
 	stop                 uint32
 
@@ -44,16 +45,16 @@ type NetAdapter struct {
 
 // NewNetAdapter creates and starts a new NetAdapter on the
 // given listeningPort
-func NewNetAdapter(cfg *infraconfig.Config, mc *domain.Metchain, bc *blockchain.Blockchain) (*NetAdapter, error) {
+func NewNetAdapter(cfg *infraconfig.Config, bc *blockchain.Blockchain) (*NetAdapter, error) {
 	netAdapterID, err := id.GenerateID()
 	if err != nil {
 		return nil, err
 	}
-	p2pServer, err := P2PServer(cfg.Listeners, mc, bc)
+	p2pServer, err := grpcserver.NewP2PServer(cfg.Listeners, bc)
 	if err != nil {
 		return nil, err
 	}
-	rpcServer, err := RPCServer(cfg.RPCListeners, cfg.RPCMaxClients, mc, bc)
+	rpcServer, err := grpcserver.NewRPCServer(cfg.RPCListeners, cfg.RPCMaxClients, bc)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +73,6 @@ func NewNetAdapter(cfg *infraconfig.Config, mc *domain.Metchain, bc *blockchain.
 	return &adapter, nil
 }
 
-// Start begins the operation of the NetAdapter
 func (na *NetAdapter) Start() error {
 	if na.p2pRouterInitializer == nil {
 		return errors.New("p2pRouterInitializer was not set")
@@ -134,7 +134,7 @@ func (na *NetAdapter) P2PConnectionCount() int {
 	return len(na.p2pConnections)
 }
 
-func (na *NetAdapter) onP2PConnectedHandler(connection Connection) error {
+func (na *NetAdapter) onP2PConnectedHandler(connection server.Connection) error {
 	netConnection := newNetConnection(connection, na.p2pRouterInitializer, "on P2P connected")
 
 	na.p2pConnectionsLock.Lock()
@@ -154,7 +154,7 @@ func (na *NetAdapter) onP2PConnectedHandler(connection Connection) error {
 	return nil
 }
 
-func (na *NetAdapter) onRPCConnectedHandler(connection Connection) error {
+func (na *NetAdapter) onRPCConnectedHandler(connection server.Connection) error {
 	netConnection := newNetConnection(connection, na.rpcRouterInitializer, "on RPC connected")
 	netConnection.setOnDisconnectedHandler(func() {})
 	netConnection.start()

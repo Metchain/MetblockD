@@ -3,6 +3,7 @@ package protoserver
 import (
 	"context"
 	"fmt"
+	"github.com/Metchain/Metblock/appmessage"
 	"github.com/Metchain/Metblock/protoserver/routerpkg"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
@@ -52,4 +53,14 @@ func Connect(address string) (*GRPCClient, error) {
 		return nil, errors.Wrapf(err, "error getting client stream for %s", address)
 	}
 	return &GRPCClient{stream: stream, connection: gRPCConnection}, nil
+}
+
+// Address returns the address associated with this connection
+func (c *NetConnection) Address() string {
+	return c.connection.Address().String()
+}
+
+// NetAddress returns the NetAddress associated with this connection
+func (c *NetConnection) NetAddress() *appmessage.NetAddress {
+	return appmessage.NewNetAddress(c.connection.Address())
 }

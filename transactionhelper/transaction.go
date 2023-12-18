@@ -1,20 +1,20 @@
 package transactionhelper
 
-import "github.com/Metchain/Metblock/mconfig/externalapi"
+import (
+	"github.com/Metchain/Metblock/external"
+)
 
-func NewSubnetworkTransaction(version uint16, inputs []*externalapi.DomainTransactionInput,
-	outputs []*externalapi.DomainTransactionOutput, subnetworkID *externalapi.DomainSubnetworkID,
-	gas uint64, payload []byte) *externalapi.DomainTransaction {
+func NewSubnetworkTransaction(version uint16, inputs []*external.DomainTransactionInput,
+	subnetworkID *external.DomainSubnetworkID,
+	gas uint64, payload []byte) *external.DomainTransaction {
 
-	return &externalapi.DomainTransaction{
-		Version:      version,
-		Inputs:       inputs,
-		Outputs:      outputs,
-		LockTime:     0,
-		SubnetworkID: *subnetworkID,
-		Gas:          gas,
-		Payload:      payload,
-		Fee:          0,
-		Mass:         0,
+	return &external.DomainTransaction{
+		Version: version,
+		Inputs:  inputs,
+
+		LockTime: 0,
+
+		Payload: payload,
+		Fee:     0,
 	}
 }

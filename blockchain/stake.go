@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/Metchain/Metblock/db/database"
 	"github.com/Metchain/Metblock/mconfig"
-	pb "github.com/Metchain/Metblock/proto"
+	pb "github.com/Metchain/Metblock/protoserver/grpcserver/protowire"
 	"google.golang.org/protobuf/proto"
 
 	"math"

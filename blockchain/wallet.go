@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	pb "github.com/Metchain/Metblock/proto"
+	pb "github.com/Metchain/Metblock/protoserver/grpcserver/protowire"
 	"google.golang.org/protobuf/proto"
 )
 

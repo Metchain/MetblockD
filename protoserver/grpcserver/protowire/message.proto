@@ -1,0 +1,52 @@
+syntax = "proto3";
+package protowire;
+
+option go_package = "./proto";
+
+
+import "rpc.proto";
+import "p2p.proto";
+
+message MetchainMessage {
+  oneof payload {
+
+    NotifyNewBlockTemplateRequestMessage notifyNewBlockTemplateRequest = 1;
+    NotifyNewBlockTemplateResponseMessage notifyNewBlockTemplateResponse = 2;
+    NewBlockTemplateNotificationMessage newBlockTemplateNotification = 3;
+
+    GetBlockTemplateRequestMessage getBlockTemplateRequest = 4;
+    GetBlockTemplateResponseMessage getBlockTemplateResponse = 5;
+
+    GetBlockDagInfoRequestMessage getBlockDagInfoRequest = 6;
+    GetBlockDagInfoResponseMessage getBlockDagInfoResponse = 7;
+
+    EstimateNetworkHashesPerSecondRequestMessage estimateNetworkHashesPerSecondRequest = 8;
+    EstimateNetworkHashesPerSecondResponseMessage estimateNetworkHashesPerSecondResponse = 9;
+
+    GetBalanceByAddressRequestMessage getBalanceByAddressRequest = 10;
+    GetBalanceByAddressResponseMessage getBalanceByAddressResponse = 11;
+
+    SubmitBlockRequestMessage submitBlockRequest = 12;
+    SubmitBlockResponseMessage submitBlockResponse = 13;
+
+    P2PLatestBlockHeightRequestMessge P2PLatestBlockHeightRequest = 14;
+    P2PLatestBlockHeightResponseMessage P2PLatestBlockHeightResponse = 15;
+    P2PBlockWithTrustedDataRequestMessage P2PBlockWithTrustedDataRequestMessage = 16;
+    P2PBlockWithTrustedDataResponseMessage P2PBlockWithTrustedDataResponseMessage = 17;
+
+
+    SubmitSignedTXRequestMessage submitSignedTXRequestMessage = 18;
+    SubmitSignedTXResponseMessage submitSignedTXResponseMessage = 19;
+
+  }
+}
+
+service RPC {
+  rpc MessageStream (stream MetchainMessage) returns (stream MetchainMessage) {}
+
+}
+
+service P2P {
+  rpc MessageStream (stream MetchainMessage) returns (stream MetchainMessage) {}
+
+}

@@ -2,7 +2,6 @@ package consensus
 
 import (
 	"github.com/Metchain/Metblock/db/database"
-	"github.com/Metchain/Metblock/domain"
 	"github.com/Metchain/Metblock/mconfig/infraconfig"
 
 	"os"
@@ -11,13 +10,12 @@ import (
 
 type status bool
 
-func Sync(gc []byte, db database.Database, cfg *infraconfig.Config) *domain.Metchain {
-	metch := checkDB(gc, db, cfg)
+func Sync(gc []byte, db database.Database, cfg *infraconfig.Config) {
+	checkDB(gc, db, cfg)
 
-	return metch
 }
-func checkDB(gc []byte, db database.Database, cfg *infraconfig.Config) *domain.Metchain {
-	s := checkDBDir(cfg)
+func checkDB(gc []byte, db database.Database, cfg *infraconfig.Config) {
+	/*s := checkDBDir(cfg)
 	if !s {
 		db := domain.GenesisConsensusDBCreate(gc, db)
 		if !db {
@@ -25,9 +23,7 @@ func checkDB(gc []byte, db database.Database, cfg *infraconfig.Config) *domain.M
 
 		}
 	}
-	metch := domain.VerifyGenesisConsensusDB(gc, db, cfg)
-
-	return metch
+	domain.VerifyGenesisConsensusDB(gc, db, cfg)*/
 
 }
 

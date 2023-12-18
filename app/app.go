@@ -2,12 +2,17 @@ package app
 
 import (
 	"flag"
+	"github.com/Metchain/Metblock/app/protocol"
 	"github.com/Metchain/Metblock/blockchain"
 	"github.com/Metchain/Metblock/blockchain/consensus"
+	"github.com/Metchain/Metblock/blockchain/mempool"
 	"github.com/Metchain/Metblock/blockchainserver"
+	"github.com/Metchain/Metblock/commanager"
 	"github.com/Metchain/Metblock/db/database"
+	"github.com/Metchain/Metblock/domain"
 	"github.com/Metchain/Metblock/mconfig/infraconfig"
 	"github.com/Metchain/Metblock/mconfig/profiling"
+	"github.com/Metchain/Metblock/network/addressmanager"
 	"github.com/Metchain/Metblock/protoserver"
 	"github.com/Metchain/Metblock/utils/signal"
 	"github.com/Metchain/Metblock/version"
@@ -65,7 +70,7 @@ func (app *metchainApp) main(startedChan chan<- struct{}) error {
 	}
 
 	// Create componentManager and start it.
-	NewComponentManager(app.cfg, databaseContext, interrupt)
+	componentManager := app.NewComponentManager(app.cfg, databaseContext, interrupt)
 
 	defer func() {
 		log.Infof("Gracefully shutting down metchaind...")
@@ -85,7 +90,13 @@ func (app *metchainApp) main(startedChan chan<- struct{}) error {
 		}
 		log.Infof("Metchaind shutdown complete")
 	}()
+	componentManager.Start()
 
+	if startedChan != nil {
+		startedChan <- struct{}{}
+	}
+
+	<-interrupt
 	if startedChan != nil {
 		startedChan <- struct{}{}
 	}
@@ -94,36 +105,77 @@ func (app *metchainApp) main(startedChan chan<- struct{}) error {
 	return nil
 }
 
-func NewComponentManager(cfg *infraconfig.Config, db database.Database, interrupt chan<- struct{}) {
-	bc := blockchain.GenesisGenrate()
-	msg, err := bc.VerifyGenesis()
-	if err {
-		log.Infof(msg)
-		log.Infof("Shutting down")
+func (MetApp *metchainApp) NewComponentManager(cfg *infraconfig.Config, db database.Database, interrupt chan<- struct{}) *ComponentManager {
+
+	consensusConfig := consensus.Config{
+		Params:                          *cfg.ActiveNetParams,
+		IsArchival:                      cfg.IsArchivalNode,
+		EnableSanityCheckPruningUTXOSet: cfg.EnableSanityCheckPruningUTXOSet,
+	}
+	mempoolConfig := mempool.DefaultConfig(&consensusConfig.Params)
+	mempoolConfig.MaximumOrphanTransactionCount = cfg.MaxOrphanTxs
+	mempoolConfig.MinimumRelayTransactionFee = cfg.MinRelayTxFee
+	addressManager, err := addressmanager.New(addressmanager.NewConfig(cfg), db)
+	if err != nil {
+		log.Infof("Shutting down : ", err)
 
 		os.Exit(112)
 	}
-	log.Infof(msg)
-	metch := consensus.Sync(bc.GensisCompile(), db, cfg)
+	domain, err := domain.New(&consensusConfig, mempoolConfig, db)
+	if err != nil {
+		log.Criticalf("Shutting down :", err)
 
-	mbc := blockchain.Start(metch)
+		os.Exit(112)
+	}
+	log.Info(domain)
+
+	bc := blockchain.GenesisGenrate()
+	msg, nerr := bc.VerifyGenesis()
+	if nerr {
+		log.Infof("Shutting down : ", msg)
+
+		os.Exit(112)
+	}
+
+	log.Infof(msg)
+	consensus.Sync(bc.GensisCompile(), db, cfg)
+
+	mbc := blockchain.Start(db)
 
 	port := flag.Uint("port", 5000, "TCP Port Number for Blockchain Server")
 	flag.Parse()
-	app := blockchainserver.NewBlockchainServer(uint16(*port), metch, mbc)
+	app := blockchainserver.NewBlockchainServer(uint16(*port), mbc)
 	go func() {
 
 		app.Run()
 
 	}()
-	blockchain.NewLastMiniBlock(metch)
-	protoserver.NewNetAdapter(cfg, metch, mbc)
 
-	/*go func() {
-		protoserver.P2PServer(metch, mbc)
-	}()
+	netAdapter, err := protoserver.NewNetAdapter(cfg, mbc)
+	if err != nil {
+		log.Infof("Shutting down : ", msg)
 
-	protoserver.RPCServer(metch, mbc)*/
+		os.Exit(112)
+	}
 
-	blockchain.GetBlockTemplateBC(metch, "")
+	network, err := commanager.New(cfg, netAdapter, addressManager)
+	if err != nil {
+		log.Infof("Shutting down : ", err)
+
+		os.Exit(112)
+	}
+
+	protocolManager, err := protocol.NewManager(cfg, netAdapter, addressManager, network)
+
+	rpcManager := setupRPC(cfg, domain, netAdapter, protocolManager, network, addressManager, interrupt)
+
+	return &ComponentManager{
+		cfg:               cfg,
+		protocolManager:   protocolManager,
+		rpcManager:        rpcManager,
+		connectionManager: network,
+		netAdapter:        netAdapter,
+		addressManager:    addressManager,
+	}
+
 }

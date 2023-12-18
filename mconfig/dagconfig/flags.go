@@ -2,12 +2,13 @@ package dagconfig
 
 import (
 	"github.com/Metchain/Metblock/appmessage"
-	"github.com/Metchain/Metblock/mconfig/externalapi"
+	"github.com/Metchain/Metblock/external"
+	"github.com/Metchain/Metblock/mconfig"
 	"time"
 )
 
 type Params struct {
-	M externalapi.MType
+	M external.MType
 
 	// Name defines a human-readable identifier for the network.
 	Name string
@@ -37,4 +38,6 @@ type Params struct {
 	MetChainMiegaBlock float64
 	MetChainMetBlock   float64
 	DeadWallet         string
+
+	Prefix mconfig.Bech32Prefix
 }

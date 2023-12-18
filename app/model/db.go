@@ -1,5 +1,7 @@
 package model
 
+import "github.com/Metchain/Metblock/db/database"
+
 // DBCursor iterates over database entries given some bucket.
 type DBCursor interface {
 	// Next moves the iterator to the next key/value pair. It returns whether the
@@ -13,20 +15,18 @@ type DBCursor interface {
 	// Seek moves the iterator to the first key/value pair whose key is greater
 	// than or equal to the given key. It returns ErrNotFound if such pair does not
 	// exist.
-	Seek(key DBKey) error
+	Seek(key database.Key) error
 
 	// Key returns the key of the current key/value pair, or ErrNotFound if done.
 	// The caller should not modify the contents of the returned key, and
 	// its contents may change on the next call to Next.
 	Key() (DBKey, error)
 
+	Last() bool
 	// Value returns the value of the current key/value pair, or ErrNotFound if done.
 	// The caller should not modify the contents of the returned slice, and its
 	// contents may change on the next call to Next.
 	Value() ([]byte, error)
-
-	// Close releases associated resources.
-	Close() error
 }
 
 // DBReader defines a proxy over domain data access
@@ -93,7 +93,7 @@ type DBKey interface {
 
 // DBBucket is an interface for a database bucket
 type DBBucket interface {
-	Bucket(bucketBytes []byte) DBBucket
-	Key(suffix []byte) DBKey
+	Bucket(bucketBytes []byte) database.Bucket
+	Key(suffix []byte) database.Key
 	Path() []byte
 }

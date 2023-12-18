@@ -27,6 +27,10 @@ Go 1.21 or later.
 
 # Installation
 
+**Telegram**
+
+Join us on Telegram Server the following link : https://t.me/Metchainofficial
+
 **Build from Source**
 
 Coming soon.

@@ -36,14 +36,6 @@ type Config struct {
 	Listeners     []string
 }
 
-func GetCfg() *Config {
-	cfg := &Config{}
-	cfg.RPCPORT = []string{":" + MainnetPortRPC}
-	cfg.RPCListeners = []string{":" + MainnetPortRPC}
-	cfg.Listeners = []string{":" + MainnetPortP2p}
-	cfg.RPCMaxClients = RPCMaxClients
-	return cfg
-}
 func GetDatadir() string {
 	d := appdir.AppDataDir(AppName, false)
 	return d

@@ -8,7 +8,7 @@ import (
 	"github.com/Metchain/Metblock/domain"
 	"github.com/Metchain/Metblock/heavyhash"
 	"github.com/Metchain/Metblock/mconfig"
-	pb "github.com/Metchain/Metblock/proto"
+	pb "github.com/Metchain/Metblock/protoserver/grpcserver/protowire"
 	"google.golang.org/protobuf/proto"
 
 	"os"
@@ -164,36 +164,6 @@ func (b *MiniBlock) MarshalJSON() ([]byte, error) {
 
 }
 
-func LastMiniBlock(mc *domain.Metchain) *MBlock {
-	lbk, lbv := mc.LastBlock()
-	genkey := ("bk-" + strings.Repeat("0", 64))
-	nbk := fmt.Sprintf("%v", string(lbk))
-	block := new(MBlock)
-	if nbk == genkey {
-		n := domain.ReadTx(lbv)
-
-		block.Timestamp = n.Timestamp
-		block.PreviousHash = n.PreviousHash
-		block.Nonce = n.Nonce
-		block.Height = n.Height
-		block.Bits = 539658475
-		if n.Height == 0 {
-			g := string(n.Transaction)
-			vt := new(mconfig.Txtransaction)
-
-			json.Unmarshal([]byte(g), vt)
-		}
-	} else {
-		block.UnmarshalJSON(lbv)
-
-	}
-
-	mc.Cdiff = block.Bits
-	mc.Blockheight = block.Height
-	//log.Println(block)
-	return block
-}
-
 func CreateMiniBlock(b *pb.RpcBlock, db database.Database, bc *Blockchain) ([32]byte, error, float64) {
 	Temptimestamp := time.Now().UnixMilli()
 	Tempoldntime := bc.LastRPCBlock.Timestamp + 6000
@@ -315,8 +285,8 @@ func (lb *LastRPCBlock) BlockToRPCLastBlock(nb *MiniBlock) *LastRPCBlock {
 	}
 
 }
-func (bc *Blockchain) LastMiniBlockRPC(db database.Database) error {
-	lbk, lbv := domain.LastBlockRPC(db)
+func (bc *Blockchain) LastMiniBlockRPC() error {
+	lbk, lbv := domain.LastBlockRPC(bc.Db)
 	genkey := ("bk-" + strings.Repeat("0", 64))
 	nbk := fmt.Sprintf("%v", string(lbk))
 	if nbk == genkey {
@@ -351,6 +321,10 @@ func (bc *Blockchain) LastMiniBlockRPC(db database.Database) error {
 
 	return nil
 
+}
+
+func (B *MBlock) DomainblockToRPCBlock(val []byte) error {
+	return B.UnmarshalJSON(val)
 }
 
 func StringTo32Byte(e string) [32]byte {

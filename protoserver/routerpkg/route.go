@@ -87,6 +87,7 @@ func (r *Route) Dequeue() (appmessage.Message, error) {
 	if !isOpen {
 		return nil, errors.Wrapf(ErrRouteClosed, "route '%s' is closed", r.name)
 	}
+	log.Info(message)
 	return message, nil
 }
 

@@ -2,7 +2,7 @@ package infraconfig
 
 import (
 	"fmt"
-	"github.com/Metchain/Metblock/mconfig/externalapi"
+	"github.com/Metchain/Metblock/external"
 	"github.com/Metchain/Metblock/mconfig/network"
 	"github.com/Metchain/Metblock/mconfig/util"
 	"github.com/Metchain/Metblock/utils/logger"
@@ -339,7 +339,7 @@ type Config struct {
 	MiningAddrs   []util.Address
 	MinRelayTxFee util.Amount
 	Whitelists    []*net.IPNet
-	SubnetworkID  *externalapi.DomainSubnetworkID // nil in full nodes
+	SubnetworkID  *external.DomainSubnetworkID // nil in full nodes
 }
 
 // cleanAndExpandPath expands environment variables and leading ~ in the

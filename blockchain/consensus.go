@@ -70,6 +70,7 @@ func (gc *GenesisConsensus) VerifyTransaction() {
 	if err {
 		log.Criticalf("%s : %s", msg, err)
 	}
+
 }
 
 func (gc *GenesisConsensus) VerifyGenesis() (string, bool) {

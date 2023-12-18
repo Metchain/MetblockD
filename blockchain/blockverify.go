@@ -3,8 +3,7 @@ package blockchain
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Metchain/Metblock/domain"
-	pb "github.com/Metchain/Metblock/proto"
+	pb "github.com/Metchain/Metblock/protoserver/grpcserver/protowire"
 	"github.com/Metchain/Metblock/utils"
 	"net"
 )
@@ -160,14 +159,6 @@ type MBlock struct {
 	Transactions []*Transaction
 	CurrentHash  [32]byte
 	Bits         uint64
-}
-
-func NewLastMiniBlock(mc *domain.Metchain) {
-	_, lbv := mc.LastBlock()
-
-	n := new(MBlock)
-	n.UnmarshalJSON(lbv)
-
 }
 
 func (b *MBlock) UnmarshalJSON(data []byte) error {
