@@ -1,7 +1,7 @@
 package database
 
 import (
-	"github.com/Metchain/Metblock/db/database"
+	"github.com/Metchain/MetblockD/db/database"
 )
 
 type dbManager struct {

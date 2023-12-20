@@ -1,8 +1,8 @@
 package mempool
 
 import (
-	"github.com/Metchain/Metblock/mconfig/constants"
-	"github.com/Metchain/Metblock/mconfig/util"
+	"github.com/Metchain/MetblockD/mconfig/constants"
+	"github.com/Metchain/MetblockD/mconfig/util"
 )
 
 const (

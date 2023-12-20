@@ -1,10 +1,10 @@
 package miningmanager
 
 import (
-	"github.com/Metchain/Metblock/blockchain/consensus/consensusreference"
-	"github.com/Metchain/Metblock/blockchain/mempool"
-	"github.com/Metchain/Metblock/mconfig/dagconfig"
-	"github.com/Metchain/Metblock/miningblockbuilder"
+	"github.com/Metchain/MetblockD/blockchain/consensus/consensusreference"
+	"github.com/Metchain/MetblockD/blockchain/mempool"
+	"github.com/Metchain/MetblockD/mconfig/dagconfig"
+	"github.com/Metchain/MetblockD/miningblockbuilder"
 	"sync"
 	"time"
 )

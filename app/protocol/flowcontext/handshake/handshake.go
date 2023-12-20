@@ -1,15 +1,15 @@
 package handshake
 
 import (
-	"github.com/Metchain/Metblock/app/protocol/common"
-	peerpkg "github.com/Metchain/Metblock/app/protocol/peer"
-	"github.com/Metchain/Metblock/app/protocol/protocolerrors"
-	"github.com/Metchain/Metblock/appmessage"
-	"github.com/Metchain/Metblock/domain"
-	"github.com/Metchain/Metblock/mconfig/infraconfig"
-	"github.com/Metchain/Metblock/network/addressmanager"
-	netadapter "github.com/Metchain/Metblock/protoserver"
-	"github.com/Metchain/Metblock/protoserver/routerpkg"
+	"github.com/Metchain/MetblockD/app/protocol/common"
+	peerpkg "github.com/Metchain/MetblockD/app/protocol/peer"
+	"github.com/Metchain/MetblockD/app/protocol/protocolerrors"
+	"github.com/Metchain/MetblockD/appmessage"
+	"github.com/Metchain/MetblockD/domain"
+	"github.com/Metchain/MetblockD/mconfig/infraconfig"
+	"github.com/Metchain/MetblockD/network/addressmanager"
+	netadapter "github.com/Metchain/MetblockD/protoserver"
+	"github.com/Metchain/MetblockD/protoserver/routerpkg"
 	"github.com/pkg/errors"
 	"sync/atomic"
 )

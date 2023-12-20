@@ -3,7 +3,7 @@ package chainhash
 import (
 	"crypto/sha256"
 	"fmt"
-	"github.com/Metchain/Metblock/mconfig"
+	"github.com/Metchain/MetblockD/mconfig"
 	"strings"
 )
 

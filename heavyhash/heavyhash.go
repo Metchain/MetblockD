@@ -5,7 +5,7 @@ package heavyhash
 import (
 	"encoding/binary"
 
-	"github.com/Metchain/Metblock/internal/crypto"
+	"github.com/Metchain/MetblockD/internal/crypto"
 )
 
 const (

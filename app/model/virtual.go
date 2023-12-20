@@ -1,6 +1,6 @@
 package model
 
-import "github.com/Metchain/Metblock/external"
+import "github.com/Metchain/MetblockD/external"
 
 var VirtualGenesisBlockHash = external.NewDomainHashFromByteArray(&[external.DomainHashSize]byte{
 	0xfe, 0xfe, 0xfe, 0xfe, 0xfe, 0xfe, 0xfe, 0xfe,

@@ -1,6 +1,6 @@
 package rpc
 
-import "github.com/Metchain/Metblock/protoserver/routerpkg"
+import "github.com/Metchain/MetblockD/protoserver/routerpkg"
 
 func (m *Manager) handleIncomingMessages(router *routerpkg.Router, incomingRoute *routerpkg.Route) error {
 	outgoingRoute := router.OutgoingRoute()

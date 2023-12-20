@@ -1,9 +1,9 @@
 package staging
 
 import (
-	"github.com/Metchain/Metblock/app/model"
-	"github.com/Metchain/Metblock/db/database"
-	"github.com/Metchain/Metblock/utils/logger"
+	"github.com/Metchain/MetblockD/app/model"
+	"github.com/Metchain/MetblockD/db/database"
+	"github.com/Metchain/MetblockD/utils/logger"
 	"sync/atomic"
 )
 

@@ -1,6 +1,6 @@
 package mempool
 
-import "github.com/Metchain/Metblock/external"
+import "github.com/Metchain/MetblockD/external"
 
 func (m mempool) HandleNewBlockTransactions(txs []*external.DomainTransaction) ([]*external.DomainTransaction, error) {
 	//TODO implement me

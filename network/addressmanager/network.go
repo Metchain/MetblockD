@@ -1,6 +1,6 @@
 package addressmanager
 
-import "github.com/Metchain/Metblock/appmessage"
+import "github.com/Metchain/MetblockD/appmessage"
 
 func IsRoutable(na *appmessage.NetAddress, acceptUnroutable bool) bool {
 	if acceptUnroutable {

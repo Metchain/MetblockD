@@ -1,8 +1,8 @@
 package common
 
 import (
-	peerpkg "github.com/Metchain/Metblock/app/protocol/peer"
-	"github.com/Metchain/Metblock/protoserver/routerpkg"
+	peerpkg "github.com/Metchain/MetblockD/app/protocol/peer"
+	"github.com/Metchain/MetblockD/protoserver/routerpkg"
 	"github.com/pkg/errors"
 	"time"
 )

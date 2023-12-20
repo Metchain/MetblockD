@@ -1,6 +1,6 @@
 package model
 
-import "github.com/Metchain/Metblock/db/database"
+import "github.com/Metchain/MetblockD/db/database"
 
 // DBCursor iterates over database entries given some bucket.
 type DBCursor interface {

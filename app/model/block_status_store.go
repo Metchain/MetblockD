@@ -1,8 +1,8 @@
 package model
 
 import (
-	"github.com/Metchain/Metblock/db/database"
-	"github.com/Metchain/Metblock/external"
+	"github.com/Metchain/MetblockD/db/database"
+	"github.com/Metchain/MetblockD/external"
 )
 
 // BlockStatusStore represents a store of BlockStatuses

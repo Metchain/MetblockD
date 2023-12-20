@@ -1,11 +1,11 @@
 package metflow
 
 import (
-	"github.com/Metchain/Metblock/app/metflow/addressexchange"
-	"github.com/Metchain/Metblock/app/protocol/common"
-	peerpkg "github.com/Metchain/Metblock/app/protocol/peer"
-	"github.com/Metchain/Metblock/appmessage"
-	"github.com/Metchain/Metblock/protoserver/routerpkg"
+	"github.com/Metchain/MetblockD/app/metflow/addressexchange"
+	"github.com/Metchain/MetblockD/app/protocol/common"
+	peerpkg "github.com/Metchain/MetblockD/app/protocol/peer"
+	"github.com/Metchain/MetblockD/appmessage"
+	"github.com/Metchain/MetblockD/protoserver/routerpkg"
 )
 
 func registerAddressFlows(m protocolManager, router *routerpkg.Router, isStopping *uint32, errChan chan error) []*common.Flow {

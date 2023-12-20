@@ -1,11 +1,11 @@
 package protocol
 
 import (
-	"github.com/Metchain/Metblock/app/protocol/flowcontext"
-	"github.com/Metchain/Metblock/commanager"
-	"github.com/Metchain/Metblock/mconfig/infraconfig"
-	"github.com/Metchain/Metblock/network/addressmanager"
-	netadapter "github.com/Metchain/Metblock/protoserver"
+	"github.com/Metchain/MetblockD/app/protocol/flowcontext"
+	"github.com/Metchain/MetblockD/commanager"
+	"github.com/Metchain/MetblockD/mconfig/infraconfig"
+	"github.com/Metchain/MetblockD/network/addressmanager"
+	netadapter "github.com/Metchain/MetblockD/protoserver"
 	"sync"
 )
 

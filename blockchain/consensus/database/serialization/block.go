@@ -1,6 +1,6 @@
 package serialization
 
-import "github.com/Metchain/Metblock/external"
+import "github.com/Metchain/MetblockD/external"
 
 // DbBlockToDomainBlock converts DbBlock to DomainBlock
 func DbBlockToDomainBlock(dbBlock *DbBlock) (*external.DomainBlock, error) {

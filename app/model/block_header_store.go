@@ -1,6 +1,6 @@
 package model
 
-import "github.com/Metchain/Metblock/external"
+import "github.com/Metchain/MetblockD/external"
 
 // BlockHeaderStore represents a store of block headers
 type BlockHeaderStore interface {

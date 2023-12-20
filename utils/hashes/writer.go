@@ -1,7 +1,7 @@
 package hashes
 
 import (
-	"github.com/Metchain/Metblock/external"
+	"github.com/Metchain/MetblockD/external"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/sha3"
 	"hash"

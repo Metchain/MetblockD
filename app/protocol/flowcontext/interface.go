@@ -1,7 +1,7 @@
 package flowcontext
 
 import (
-	"github.com/Metchain/Metblock/network/addressmanager"
+	"github.com/Metchain/MetblockD/network/addressmanager"
 )
 
 // AddressManager returns the address manager associated to the flow context.

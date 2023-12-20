@@ -5,7 +5,7 @@
 package appmessage
 
 import (
-	"github.com/Metchain/Metblock/utils/mstime"
+	"github.com/Metchain/MetblockD/utils/mstime"
 	"net"
 )
 

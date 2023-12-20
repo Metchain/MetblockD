@@ -1,10 +1,8 @@
 package protowire
 
 import (
-	"github.com/Metchain/Metblock/appmessage"
+	"github.com/Metchain/MetblockD/appmessage"
 	"github.com/pkg/errors"
-	"log"
-	"os"
 )
 
 func (x *MetchainMessage_GetBlockTemplateRequest) toAppMessage() (appmessage.Message, error) {
@@ -40,8 +38,7 @@ func (x *MetchainMessage_GetBlockTemplateResponse) toAppMessage() (appmessage.Me
 }
 
 func (x *MetchainMessage_GetBlockTemplateResponse) fromAppMessage(message *appmessage.GetBlockTemplateResponseMessage) error {
-	log.Println(message)
-	os.Exit(8585)
+
 	var err *RPCError
 	if message.Error != nil {
 		err = &RPCError{Message: message.Error.Message}

@@ -1,6 +1,6 @@
 package model
 
-import "github.com/Metchain/Metblock/external"
+import "github.com/Metchain/MetblockD/external"
 
 type BlockRelationStore interface {
 	StageBlockRelation(stagingArea *StagingArea, blockHash *external.DomainHash, blockRelations *BlockRelations)

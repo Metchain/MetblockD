@@ -2,6 +2,7 @@ package hashes
 
 import (
 	"crypto/sha256"
+	"github.com/Metchain/MetblockD/external"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/blake2b"
 	"golang.org/x/crypto/sha3"
@@ -85,4 +86,13 @@ func NewMerkleBranchHashWriter() HashWriter {
 		panic(errors.Wrapf(err, "this should never happen. %s is less than 64 bytes", merkleBranchDomain))
 	}
 	return HashWriter{blake}
+}
+
+// ToStrings converts a slice of hashes into a slice of the corresponding strings
+func ToStrings(hashes []*external.DomainHash) []string {
+	strings := make([]string, len(hashes))
+	for i, hash := range hashes {
+		strings[i] = hash.String()
+	}
+	return strings
 }

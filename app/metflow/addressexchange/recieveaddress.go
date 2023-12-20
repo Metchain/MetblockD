@@ -1,12 +1,12 @@
 package addressexchange
 
 import (
-	"github.com/Metchain/Metblock/app/protocol/common"
-	peerpkg "github.com/Metchain/Metblock/app/protocol/peer"
-	"github.com/Metchain/Metblock/app/protocol/protocolerrors"
-	"github.com/Metchain/Metblock/appmessage"
-	"github.com/Metchain/Metblock/network/addressmanager"
-	"github.com/Metchain/Metblock/protoserver/routerpkg"
+	"github.com/Metchain/MetblockD/app/protocol/common"
+	peerpkg "github.com/Metchain/MetblockD/app/protocol/peer"
+	"github.com/Metchain/MetblockD/app/protocol/protocolerrors"
+	"github.com/Metchain/MetblockD/appmessage"
+	"github.com/Metchain/MetblockD/network/addressmanager"
+	"github.com/Metchain/MetblockD/protoserver/routerpkg"
 )
 
 // ReceiveAddressesContext is the interface for the context needed for the ReceiveAddresses flow.

@@ -1,7 +1,7 @@
 package util
 
 import (
-	"github.com/Metchain/Metblock/mconfig/constants"
+	"github.com/Metchain/MetblockD/mconfig/constants"
 	"github.com/pkg/errors"
 	"math"
 )

@@ -1,19 +1,19 @@
 package commanager
 
 import (
-	"github.com/Metchain/Metblock/mconfig/infraconfig"
+	"github.com/Metchain/MetblockD/mconfig/infraconfig"
 	"net"
 	"sync"
 	"sync/atomic"
 	"time"
 
-	"github.com/Metchain/Metblock/appmessage"
-	"github.com/Metchain/Metblock/network/dnsseed"
+	"github.com/Metchain/MetblockD/appmessage"
+	"github.com/Metchain/MetblockD/network/dnsseed"
 	"github.com/pkg/errors"
 
-	"github.com/Metchain/Metblock/network/addressmanager"
+	"github.com/Metchain/MetblockD/network/addressmanager"
 
-	netadapter "github.com/Metchain/Metblock/protoserver"
+	netadapter "github.com/Metchain/MetblockD/protoserver"
 )
 
 // connectionRequest represents a user request (either through CLI or RPC) to connect to a certain node

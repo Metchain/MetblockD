@@ -2,10 +2,10 @@ package protoserver
 
 import (
 	"fmt"
-	"github.com/Metchain/Metblock/appmessage"
-	"github.com/Metchain/Metblock/protoserver/id"
-	"github.com/Metchain/Metblock/protoserver/routerpkg"
-	"github.com/Metchain/Metblock/protoserver/server"
+	"github.com/Metchain/MetblockD/appmessage"
+	"github.com/Metchain/MetblockD/protoserver/id"
+	"github.com/Metchain/MetblockD/protoserver/routerpkg"
+	"github.com/Metchain/MetblockD/protoserver/server"
 	"github.com/pkg/errors"
 	"sync/atomic"
 )

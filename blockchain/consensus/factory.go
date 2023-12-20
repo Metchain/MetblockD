@@ -1,11 +1,11 @@
 package consensus
 
 import (
-	consensusdatabase "github.com/Metchain/Metblock/blockchain/consensus/database"
-	"github.com/Metchain/Metblock/blockchain/consensus/internal/blockbuilder"
-	"github.com/Metchain/Metblock/db/database"
-	"github.com/Metchain/Metblock/external"
-	"github.com/Metchain/Metblock/mconfig/dagconfig"
+	consensusdatabase "github.com/Metchain/MetblockD/blockchain/consensus/database"
+	"github.com/Metchain/MetblockD/blockchain/consensus/internal/blockbuilder"
+	"github.com/Metchain/MetblockD/db/database"
+	"github.com/Metchain/MetblockD/external"
+	"github.com/Metchain/MetblockD/mconfig/dagconfig"
 	"sync"
 )
 

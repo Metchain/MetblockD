@@ -2,7 +2,7 @@ package addressmanager
 
 import (
 	"errors"
-	"github.com/Metchain/Metblock/utils/logger"
+	"github.com/Metchain/MetblockD/utils/logger"
 )
 
 // ErrAddressNotFound is an error returned from some functions when a

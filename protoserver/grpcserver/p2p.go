@@ -2,11 +2,11 @@ package grpcserver
 
 import (
 	"context"
-	"github.com/Metchain/Metblock/blockchain"
-	"github.com/Metchain/Metblock/domain"
-	"github.com/Metchain/Metblock/protoserver/grpcserver/protowire"
-	"github.com/Metchain/Metblock/protoserver/server"
-	"github.com/Metchain/Metblock/utils/panics"
+	"github.com/Metchain/MetblockD/blockchain"
+	"github.com/Metchain/MetblockD/domain"
+	"github.com/Metchain/MetblockD/protoserver/grpcserver/protowire"
+	"github.com/Metchain/MetblockD/protoserver/server"
+	"github.com/Metchain/MetblockD/utils/panics"
 
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"

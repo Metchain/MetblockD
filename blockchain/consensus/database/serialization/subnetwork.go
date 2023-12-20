@@ -1,8 +1,8 @@
 package serialization
 
 import (
-	"github.com/Metchain/Metblock/external"
-	subnetworks "github.com/Metchain/Metblock/utils/subnetwork"
+	"github.com/Metchain/MetblockD/external"
+	subnetworks "github.com/Metchain/MetblockD/utils/subnetwork"
 )
 
 // DbSubnetworkIDToDomainSubnetworkID converts DbSubnetworkId to DomainSubnetworkID

@@ -35,7 +35,7 @@ package logger
 import (
 	"bytes"
 	"fmt"
-	"github.com/Metchain/Metblock/utils/mstime"
+	"github.com/Metchain/MetblockD/utils/mstime"
 	"os"
 	"runtime"
 	"sync/atomic"

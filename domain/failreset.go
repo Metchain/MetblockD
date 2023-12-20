@@ -1,7 +1,7 @@
 package domain
 
 import (
-	"github.com/Metchain/Metblock/mconfig/infraconfig"
+	"github.com/Metchain/MetblockD/mconfig/infraconfig"
 
 	"os"
 	"path/filepath"

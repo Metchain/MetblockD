@@ -1,8 +1,8 @@
 package flowcontext
 
 import (
-	"github.com/Metchain/Metblock/app/protocol/protocolerrors"
-	"github.com/Metchain/Metblock/protoserver/routerpkg"
+	"github.com/Metchain/MetblockD/app/protocol/protocolerrors"
+	"github.com/Metchain/MetblockD/protoserver/routerpkg"
 	"github.com/pkg/errors"
 	"strings"
 	"sync/atomic"

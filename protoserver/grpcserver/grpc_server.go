@@ -3,8 +3,8 @@ package grpcserver
 import (
 	"context"
 	"fmt"
-	"github.com/Metchain/Metblock/protoserver/server"
-	"github.com/Metchain/Metblock/utils/panics"
+	"github.com/Metchain/MetblockD/protoserver/server"
+	"github.com/Metchain/MetblockD/utils/panics"
 
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"

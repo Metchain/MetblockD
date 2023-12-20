@@ -1,6 +1,6 @@
 package lrucache
 
-import "github.com/Metchain/Metblock/external"
+import "github.com/Metchain/MetblockD/external"
 
 // LRUCache is a least-recently-used cache for any type
 // that's able to be indexed by DomainHash

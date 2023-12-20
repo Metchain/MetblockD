@@ -1,7 +1,7 @@
 package appmessage
 
 import (
-	"github.com/Metchain/Metblock/external"
+	"github.com/Metchain/MetblockD/external"
 )
 
 // MsgRequestAddresses implements the Message interface and represents a Metchain

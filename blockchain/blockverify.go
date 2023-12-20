@@ -3,8 +3,8 @@ package blockchain
 import (
 	"encoding/json"
 	"fmt"
-	pb "github.com/Metchain/Metblock/protoserver/grpcserver/protowire"
-	"github.com/Metchain/Metblock/utils"
+	pb "github.com/Metchain/MetblockD/protoserver/grpcserver/protowire"
+	"github.com/Metchain/MetblockD/utils"
 	"net"
 )
 

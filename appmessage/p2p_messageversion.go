@@ -2,10 +2,10 @@ package appmessage
 
 import (
 	"fmt"
-	"github.com/Metchain/Metblock/external"
-	"github.com/Metchain/Metblock/protoserver/id"
-	"github.com/Metchain/Metblock/utils/mstime"
-	"github.com/Metchain/Metblock/version"
+	"github.com/Metchain/MetblockD/external"
+	"github.com/Metchain/MetblockD/protoserver/id"
+	"github.com/Metchain/MetblockD/utils/mstime"
+	"github.com/Metchain/MetblockD/version"
 	"strings"
 )
 

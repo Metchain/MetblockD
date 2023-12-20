@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/Metchain/Metblock/internal/common/testutil"
+	"github.com/Metchain/MetblockD/internal/common/testutil"
 )
 
 func TestHeavyHash(t *testing.T) {

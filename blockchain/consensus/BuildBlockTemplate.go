@@ -1,7 +1,7 @@
 package consensus
 
 import (
-	"github.com/Metchain/Metblock/external"
+	"github.com/Metchain/MetblockD/external"
 )
 
 func (c *consensus) BuildBlockTemplate(coinbaseData *external.DomainCoinbaseData) (*external.DomainBlockTemplate, error) {

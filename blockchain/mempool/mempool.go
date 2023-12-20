@@ -1,8 +1,8 @@
 package mempool
 
 import (
-	"github.com/Metchain/Metblock/mconfig/dagconfig"
-	"github.com/Metchain/Metblock/mconfig/util"
+	"github.com/Metchain/MetblockD/mconfig/dagconfig"
+	"github.com/Metchain/MetblockD/mconfig/util"
 	"time"
 )
 

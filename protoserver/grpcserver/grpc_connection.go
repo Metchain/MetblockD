@@ -1,9 +1,9 @@
 package grpcserver
 
 import (
-	"github.com/Metchain/Metblock/protoserver/grpcserver/protowire"
-	"github.com/Metchain/Metblock/protoserver/routerpkg"
-	"github.com/Metchain/Metblock/protoserver/server"
+	"github.com/Metchain/MetblockD/protoserver/grpcserver/protowire"
+	"github.com/Metchain/MetblockD/protoserver/routerpkg"
+	"github.com/Metchain/MetblockD/protoserver/server"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"

@@ -1,11 +1,11 @@
 package consensus
 
 import (
-	"github.com/Metchain/Metblock/app/model"
-	"github.com/Metchain/Metblock/db/database"
-	"github.com/Metchain/Metblock/external"
-	"github.com/Metchain/Metblock/utils/logger"
-	"github.com/Metchain/Metblock/utils/staging"
+	"github.com/Metchain/MetblockD/app/model"
+	"github.com/Metchain/MetblockD/db/database"
+	"github.com/Metchain/MetblockD/external"
+	"github.com/Metchain/MetblockD/utils/logger"
+	"github.com/Metchain/MetblockD/utils/staging"
 	"sync"
 )
 
@@ -54,9 +54,17 @@ type consensus struct {
 	virtualNotUpdated   bool
 }
 
-func (s *consensus) BuildBlock(coinbaseData *external.DomainCoinbaseData, transactions []*external.DomainTransaction) (*external.DomainBlock, error) {
-	//TODO implement me
-	panic("implement me")
+func (c *consensus) BuildBlock(block *external.TempBlock) (*external.TempBlock, error) {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+
+	block, err := c.blockBuilder.BuildBlock(block)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return block, nil
 }
 
 func (s *consensus) ValidateAndInsertBlock(block *external.DomainBlock, updateVirtual bool) error {

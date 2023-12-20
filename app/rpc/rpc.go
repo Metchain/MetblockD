@@ -1,17 +1,17 @@
 package rpc
 
 import (
-	"github.com/Metchain/Metblock/app/protocol"
-	"github.com/Metchain/Metblock/app/rpc/rpccontext"
-	"github.com/Metchain/Metblock/appmessage"
-	"github.com/Metchain/Metblock/commanager"
-	"github.com/Metchain/Metblock/domain"
-	"github.com/Metchain/Metblock/external"
-	"github.com/Metchain/Metblock/mconfig/infraconfig"
-	"github.com/Metchain/Metblock/network/addressmanager"
-	netadapter "github.com/Metchain/Metblock/protoserver"
-	"github.com/Metchain/Metblock/protoserver/routerpkg"
-	"github.com/Metchain/Metblock/utils/logger"
+	"github.com/Metchain/MetblockD/app/protocol"
+	"github.com/Metchain/MetblockD/app/rpc/rpccontext"
+	"github.com/Metchain/MetblockD/appmessage"
+	"github.com/Metchain/MetblockD/commanager"
+	"github.com/Metchain/MetblockD/domain"
+	"github.com/Metchain/MetblockD/external"
+	"github.com/Metchain/MetblockD/mconfig/infraconfig"
+	"github.com/Metchain/MetblockD/network/addressmanager"
+	netadapter "github.com/Metchain/MetblockD/protoserver"
+	"github.com/Metchain/MetblockD/protoserver/routerpkg"
+	"github.com/Metchain/MetblockD/utils/logger"
 	"github.com/pkg/errors"
 )
 
@@ -107,7 +107,7 @@ func (m *Manager) notifyBlockAdded(block *external.DomainBlock) error {
 	onEnd := logger.LogAndMeasureExecutionTime(log, "RPCManager.notifyBlockAddedToDAG")
 	defer onEnd()
 
-	rpcBlock := appmessage.DomainBlockToRPCBlock(block)
+	rpcBlock, _ := appmessage.DomainBlockToRPCBlock(block)
 	/*err := m.context.PopulateBlockWithVerboseData(rpcBlock, block.Header, block, true)
 	if err != nil {
 		return err

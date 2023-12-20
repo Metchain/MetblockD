@@ -2,8 +2,8 @@ package blockchain
 
 import (
 	"encoding/json"
-	"github.com/Metchain/Metblock/blockchain/consensus"
-	"github.com/Metchain/Metblock/mconfig"
+	"github.com/Metchain/MetblockD/blockchain/consensus"
+	"github.com/Metchain/MetblockD/mconfig"
 )
 
 type GenesisConsensus struct {

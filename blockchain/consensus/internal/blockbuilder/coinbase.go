@@ -1,8 +1,8 @@
 package blockbuilder
 
 import (
-	"github.com/Metchain/Metblock/app/model"
-	"github.com/Metchain/Metblock/external"
+	"github.com/Metchain/MetblockD/app/model"
+	"github.com/Metchain/MetblockD/external"
 )
 
 func (bb *blockBuilder) newBlockCoinbaseTransaction(stagingArea *model.StagingArea,

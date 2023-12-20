@@ -8,7 +8,7 @@ package database_test
 import (
 	"bytes"
 	"fmt"
-	"github.com/Metchain/Metblock/db/database"
+	"github.com/Metchain/MetblockD/db/database"
 	"reflect"
 	"strings"
 	"testing"

@@ -1,12 +1,13 @@
 package rpccontext
 
 import (
-	"github.com/Metchain/Metblock/app/protocol"
-	"github.com/Metchain/Metblock/commanager"
-	"github.com/Metchain/Metblock/domain"
-	"github.com/Metchain/Metblock/mconfig/infraconfig"
-	"github.com/Metchain/Metblock/network/addressmanager"
-	netadapter "github.com/Metchain/Metblock/protoserver"
+	"github.com/Metchain/MetblockD/app/protocol"
+	"github.com/Metchain/MetblockD/commanager"
+	"github.com/Metchain/MetblockD/domain"
+	"github.com/Metchain/MetblockD/external"
+	"github.com/Metchain/MetblockD/mconfig/infraconfig"
+	"github.com/Metchain/MetblockD/network/addressmanager"
+	netadapter "github.com/Metchain/MetblockD/protoserver"
 )
 
 // Context represents the RPC context
@@ -17,8 +18,8 @@ type Context struct {
 	ProtocolManager   *protocol.Manager
 	ConnectionManager *commanager.ConnectionManager
 	AddressManager    *addressmanager.AddressManager
-
-	ShutDownChan chan<- struct{}
+	LastRPCBlock      *external.DomainBlock
+	ShutDownChan      chan<- struct{}
 }
 
 // NewContext creates a new RPC context

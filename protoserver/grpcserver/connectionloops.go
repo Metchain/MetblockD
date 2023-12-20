@@ -1,10 +1,10 @@
 package grpcserver
 
 import (
-	"github.com/Metchain/Metblock/appmessage"
-	"github.com/Metchain/Metblock/protoserver/grpcserver/protowire"
-	"github.com/Metchain/Metblock/protoserver/routerpkg"
-	"github.com/Metchain/Metblock/utils/logger"
+	"github.com/Metchain/MetblockD/appmessage"
+	"github.com/Metchain/MetblockD/protoserver/grpcserver/protowire"
+	"github.com/Metchain/MetblockD/protoserver/routerpkg"
+	"github.com/Metchain/MetblockD/utils/logger"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 	"io"

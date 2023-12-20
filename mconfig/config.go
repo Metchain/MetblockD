@@ -2,7 +2,7 @@ package mconfig
 
 import (
 	"fmt"
-	"github.com/Metchain/Metblock/utils/appdir"
+	"github.com/Metchain/MetblockD/utils/appdir"
 	"log"
 	"net"
 )

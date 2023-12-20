@@ -5,8 +5,8 @@ import (
 	"io/ioutil"
 	"testing"
 
-	"github.com/Metchain/Metblock/db/database"
-	"github.com/Metchain/Metblock/db/database/ldb"
+	"github.com/Metchain/MetblockD/db/database"
+	"github.com/Metchain/MetblockD/db/database/ldb"
 )
 
 type databasePrepareFunc func(t *testing.T, testName string) (db database.Database, name string, teardownFunc func())

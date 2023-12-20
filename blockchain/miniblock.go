@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/Metchain/Metblock/db/database"
-	"github.com/Metchain/Metblock/domain"
-	"github.com/Metchain/Metblock/heavyhash"
-	"github.com/Metchain/Metblock/mconfig"
-	pb "github.com/Metchain/Metblock/protoserver/grpcserver/protowire"
+	"github.com/Metchain/MetblockD/db/database"
+	"github.com/Metchain/MetblockD/domain"
+	"github.com/Metchain/MetblockD/heavyhash"
+	"github.com/Metchain/MetblockD/mconfig"
+	pb "github.com/Metchain/MetblockD/protoserver/grpcserver/protowire"
 	"google.golang.org/protobuf/proto"
 
 	"os"
@@ -49,6 +49,7 @@ func GetBlockDB(height int) ([]byte, []byte) {
 
 }
 
+var utxo_walletkey = database.MakeBucket([]byte("utxo_wallet"))
 var MBlockkey = database.MakeBucket([]byte("block"))
 var Utxokey = database.MakeBucket([]byte("utxo_tx"))
 
@@ -209,20 +210,20 @@ func CreateMiniBlock(b *pb.RpcBlock, db database.Database, bc *Blockchain) ([32]
 
 	}
 	bc.ClearTransactionPool()
-	transactions := make([]*Transaction, 0)
+	//transactions := make([]*Transaction, 0)
 	nb.megablock = StringTo32Byte(b.Header.Parents[0].ParentHashes[0])
 	nb.metblock = StringTo32Byte(b.Header.Parents[0].ParentHashes[1])
 
 	nb.currentHash = Hash([]byte(fmt.Sprintf("%x", nb.previousHash)), nb.timestamp, nb.nonce)
 
-	MinBC := len(bc.MiniBlock)
+	/*MinBC := len(bc.MiniBlock)
 
 	MegBC := len(bc.MegaBlock)
-	MetBC := len(bc.MetBlock)
+	MetBC := len(bc.MetBlock)*/
 
 	var ts []*Transaction
 	var Reward float64
-	if MinBC <= 11 {
+	/*if MinBC <= 11 {
 		bc.MiniBlock = append(bc.MiniBlock, fmt.Sprintf("%x", nb.currentHash))
 		ts = append(transactions, NewTransactionMiner(MINING_SENDER, b.Header.UtxoCommitment, MINING_REWARD))
 		Reward = MINING_REWARD
@@ -244,7 +245,7 @@ func CreateMiniBlock(b *pb.RpcBlock, db database.Database, bc *Blockchain) ([32]
 	}
 	if MetBC >= 1 {
 		bc.MetBlock = []string{}
-	}
+	}*/
 
 	for _, tx := range ntx {
 		if tx.senderBlockchainAddress != mconfig.DeadWallet && (tx.senderBlockchainAddress != MINING_SENDER || tx.txtype == 3) {

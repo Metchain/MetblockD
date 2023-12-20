@@ -1,6 +1,6 @@
 package model
 
-import "github.com/Metchain/Metblock/external"
+import "github.com/Metchain/MetblockD/external"
 
 // CoinbaseManager exposes methods for handling blocks'
 // coinbase transactions

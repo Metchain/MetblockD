@@ -2,9 +2,9 @@ package blockchain
 
 import (
 	"fmt"
-	"github.com/Metchain/Metblock/db/database"
-	"github.com/Metchain/Metblock/mconfig"
-	pb "github.com/Metchain/Metblock/protoserver/grpcserver/protowire"
+	"github.com/Metchain/MetblockD/db/database"
+	"github.com/Metchain/MetblockD/mconfig"
+	pb "github.com/Metchain/MetblockD/protoserver/grpcserver/protowire"
 	"google.golang.org/protobuf/proto"
 
 	"math"

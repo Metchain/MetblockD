@@ -2,8 +2,8 @@ package consensus
 
 import (
 	"fmt"
-	"github.com/Metchain/Metblock/mconfig"
-	"github.com/Metchain/Metblock/utils/chainhash"
+	"github.com/Metchain/MetblockD/mconfig"
+	"github.com/Metchain/MetblockD/utils/chainhash"
 	"os"
 	"strings"
 )

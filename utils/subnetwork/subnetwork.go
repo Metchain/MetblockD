@@ -1,8 +1,8 @@
 package subnetworks
 
 import (
-	"github.com/Metchain/Metblock/external"
-	"github.com/Metchain/Metblock/mconfig/externalapi"
+	"github.com/Metchain/MetblockD/external"
+	"github.com/Metchain/MetblockD/mconfig/externalapi"
 	"github.com/pkg/errors"
 )
 

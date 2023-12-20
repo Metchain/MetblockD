@@ -1,10 +1,10 @@
 package miningmanager
 
 import (
-	"github.com/Metchain/Metblock/blockchain/consensus/consensusreference"
-	"github.com/Metchain/Metblock/blockchain/domainconsensus/miningmanager/miningmodel"
-	"github.com/Metchain/Metblock/external"
-	"github.com/Metchain/Metblock/miningblockbuilder/miningmempoolmodel"
+	"github.com/Metchain/MetblockD/blockchain/consensus/consensusreference"
+	"github.com/Metchain/MetblockD/blockchain/domainconsensus/miningmanager/miningmodel"
+	"github.com/Metchain/MetblockD/external"
+	"github.com/Metchain/MetblockD/miningblockbuilder/miningmempoolmodel"
 	"sync"
 	"time"
 )
@@ -68,6 +68,7 @@ type MiningManager interface {
 	ClearBlockTemplate()
 	GetBlockTemplateBuilder() miningmodel.BlockTemplateBuilder
 	miningmempoolmodel.Mempool
+	AddMiningBlock(*external.TempBlock) (block *external.TempBlock, err error)
 }
 
 func (mm *miningManager) GetBlockTemplate(coinbaseData *external.DomainCoinbaseData) (block *external.DomainBlock, isNearlySynced bool, err error) {
@@ -103,6 +104,18 @@ func (mm *miningManager) GetBlockTemplate(coinbaseData *external.DomainCoinbaseD
 	mm.setImmutableCachedTemplate(blockTemplate)
 
 	return blockTemplate.Block, blockTemplate.IsNearlySynced, nil
+}
+
+func (mm *miningManager) AddMiningBlock(tempblock *external.TempBlock) (block *external.TempBlock, err error) {
+
+	// No relevant cache, build a template
+	blocks, err := mm.blockTemplateBuilder.BuildBlock(tempblock)
+	if err != nil {
+		return nil, err
+	}
+
+	return blocks, nil
+	//return Block, blockTemplate.IsNearlySynced, nil
 }
 
 func (mm *miningManager) setImmutableCachedTemplate(blockTemplate *external.DomainBlockTemplate) {

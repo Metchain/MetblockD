@@ -1,7 +1,7 @@
 package commanager
 
 import (
-	"github.com/Metchain/Metblock/protoserver"
+	"github.com/Metchain/MetblockD/protoserver"
 )
 
 type connectionSet map[string]*protoserver.NetConnection

@@ -1,8 +1,8 @@
 package serialization
 
 import (
-	"github.com/Metchain/Metblock/external"
-	"github.com/Metchain/Metblock/utils/binaryserializer"
+	"github.com/Metchain/MetblockD/external"
+	"github.com/Metchain/MetblockD/utils/binaryserializer"
 	"github.com/pkg/errors"
 	"io"
 )

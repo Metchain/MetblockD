@@ -9,6 +9,7 @@ type Consensus interface {
 	Init(skipAddingGenesis bool) error
 	//Needed for Mining
 	BuildBlockTemplate(coinbaseData *DomainCoinbaseData) (*DomainBlockTemplate, error)
+	BuildBlock(block *TempBlock) (*TempBlock, error)
 
 	/*BuildBlock(coinbaseData *DomainCoinbaseData, transactions []*DomainTransaction) (*DomainBlock, error)
 	ValidateAndInsertBlock(block *DomainBlock, updateVirtual bool) error

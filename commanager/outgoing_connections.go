@@ -1,6 +1,6 @@
 package commanager
 
-import "github.com/Metchain/Metblock/appmessage"
+import "github.com/Metchain/MetblockD/appmessage"
 
 // checkOutgoingConnections goes over all activeOutgoing and makes sure they are still active.
 // Then it opens connections so that we have targetOutgoing active connections

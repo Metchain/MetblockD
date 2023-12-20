@@ -1,6 +1,6 @@
 package model
 
-import "github.com/Metchain/Metblock/external"
+import "github.com/Metchain/MetblockD/external"
 
 type SyncManager interface {
 	GetHashesBetween(stagingArea *StagingArea, lowHash, highHash *external.DomainHash, maxBlocks uint64) (

@@ -1,6 +1,6 @@
 package app
 
-import "github.com/Metchain/Metblock/utils/limits"
+import "github.com/Metchain/MetblockD/utils/limits"
 
 const (
 	leveldbCacheSizeMiB = 256

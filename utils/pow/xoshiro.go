@@ -2,7 +2,7 @@ package pow
 
 import (
 	"encoding/binary"
-	"github.com/Metchain/Metblock/external"
+	"github.com/Metchain/MetblockD/external"
 	"math/bits"
 )
 

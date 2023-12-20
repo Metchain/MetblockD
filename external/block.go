@@ -1,5 +1,10 @@
 package external
 
+import (
+	"encoding/json"
+	"fmt"
+)
+
 // DomainBlock represents a Metchain block
 type DomainBlock struct {
 	Header       BlockHeader
@@ -30,15 +35,15 @@ type BaseBlockHeader interface {
 	Blockheight() uint64
 	BlockHash() *DomainHash
 	Previoushash() *DomainHash
-	Merkleroot() *DomainHash
-	DirectParents() []*BlockLevelParents
+	Merkleroothash() *DomainHash
+	DirectParents() BlockLevelParents
 	MetBlock() *DomainHash
 	MegaBlock() *DomainHash
-	ChildBlocks() []*BlockLevelChildern
+	ChildBlocks() []BlockLevelChildern
 	UTXOCommitment() *DomainHash
 	TimeInMilliseconds() int64
 	BlockLevel(maxBlockLevel int) int
-	ParentByteToString() []string
+	Parents() []BlockLevelParents
 	Bits() uint64
 	Nonce() uint64
 	UtxoCommitment() []byte
@@ -99,3 +104,71 @@ type BlockSent struct {
 func (*BlockAdded) isConsensusEvent() {}
 
 func (*BlockSent) isConsensusEvent() {}
+
+type TempBlock struct {
+	Height       uint64
+	Timestamp    int64
+	Nonce        uint64
+	PreviousHash [32]byte //As per the Hash size
+	Megablock    [32]byte
+	Metblock     [32]byte
+	Transactions []*TempTransaction
+	CurrentHash  [32]byte
+	Bits         uint64
+}
+
+type TempTransaction struct {
+	SenderBlockchainAddress    string
+	RecipientBlockchainAddress string
+	Txtype                     int8
+	Value                      float32
+	Txhash                     [32]byte
+	Timestamp                  int64
+	Txstatus                   int8
+}
+
+func (b *TempBlock) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		Height       uint64             `json:"height"`
+		Timestamp    int64              `json:"timestamp"`
+		Nonce        uint64             `json:"nonce"`
+		PreviousHash [32]byte           `json:"previousHash"`
+		Metblock     [32]byte           `json:"metblock"`
+		Megablock    [32]byte           `json:"megablock"`
+		CurrentHash  [32]byte           `json:"currentHash"`
+		Transaction  []*TempTransaction `json:"transaction"`
+		Bits         uint64             `json:"bits"`
+	}{
+		Height:       b.Height,
+		Timestamp:    b.Timestamp,
+		Nonce:        b.Nonce,
+		PreviousHash: b.PreviousHash,
+		Metblock:     b.Metblock,
+		Megablock:    b.Megablock,
+		CurrentHash:  b.CurrentHash,
+		Transaction:  b.Transactions,
+		Bits:         b.Bits,
+	})
+
+}
+
+func (t *TempTransaction) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		Sender    string  `json:"sender_blockchain_address"`
+		Recipient string  `json:"recipient_blockchain_address"`
+		Value     float32 `json:"value"`
+		Txtype    int8    `json:"txtype"`
+		Txhash    string  `json:"txhash"`
+		Timestamp int64   `json:"timestamp"`
+		Txstatus  int8    `json:"txstatus"`
+	}{
+		Sender:    t.SenderBlockchainAddress,
+		Recipient: t.RecipientBlockchainAddress,
+		Value:     t.Value,
+		Txtype:    t.Txtype,
+
+		Txhash:    fmt.Sprintf("%x", t.Txhash),
+		Timestamp: t.Timestamp,
+		Txstatus:  t.Txstatus,
+	})
+}

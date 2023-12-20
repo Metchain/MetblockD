@@ -1,6 +1,6 @@
 package controller
 
-import "github.com/Metchain/Metblock/external"
+import "github.com/Metchain/MetblockD/external"
 
 // MempoolTransaction represents a transaction inside the main TransactionPool
 type MempoolTransaction struct {

@@ -1,6 +1,6 @@
 package consensusreference
 
-import "github.com/Metchain/Metblock/external"
+import "github.com/Metchain/MetblockD/external"
 
 // ConsensusReference holds a reference to a consensus object.
 // The consensus object may be swapped with a new one entirely

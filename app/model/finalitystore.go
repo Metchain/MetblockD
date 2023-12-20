@@ -1,6 +1,6 @@
 package model
 
-import "github.com/Metchain/Metblock/external"
+import "github.com/Metchain/MetblockD/external"
 
 // UTXODiffStore represents a store of UTXODiffs
 type UTXODiffStore interface {

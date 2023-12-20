@@ -1,9 +1,9 @@
 package dagconfig
 
 import (
-	"github.com/Metchain/Metblock/appmessage"
-	"github.com/Metchain/Metblock/external"
-	"github.com/Metchain/Metblock/mconfig"
+	"github.com/Metchain/MetblockD/appmessage"
+	"github.com/Metchain/MetblockD/external"
+	"github.com/Metchain/MetblockD/mconfig"
 	"time"
 )
 

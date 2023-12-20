@@ -1,6 +1,6 @@
 package miningmempoolmodel
 
-import "github.com/Metchain/Metblock/external"
+import "github.com/Metchain/MetblockD/external"
 
 type Mempool interface {
 	HandleNewBlockTransactions(txs []*external.DomainTransaction) ([]*external.DomainTransaction, error)

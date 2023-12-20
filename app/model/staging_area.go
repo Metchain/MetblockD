@@ -2,7 +2,7 @@ package model
 
 import (
 	"errors"
-	"github.com/Metchain/Metblock/db/database"
+	"github.com/Metchain/MetblockD/db/database"
 )
 
 // StagingShardID is used to identify each of the store's staging shards

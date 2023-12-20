@@ -1,11 +1,11 @@
 package blockbuilder
 
 import (
-	"github.com/Metchain/Metblock/blockchain/consensus/blockheader"
-	"github.com/Metchain/Metblock/blockchain/consensus/stagingarea"
-	"github.com/Metchain/Metblock/db/database"
-	"github.com/Metchain/Metblock/external"
-	"github.com/Metchain/Metblock/utils/logger"
+	"github.com/Metchain/MetblockD/blockchain/consensus/blockheader"
+	"github.com/Metchain/MetblockD/blockchain/consensus/stagingarea"
+	"github.com/Metchain/MetblockD/db/database"
+	"github.com/Metchain/MetblockD/external"
+	"github.com/Metchain/MetblockD/utils/logger"
 )
 
 type blockBuilder struct {
@@ -16,6 +16,19 @@ func New(db database.Database) *blockBuilder {
 	return &blockBuilder{
 		databaseContext: db,
 	}
+}
+
+func (bb *blockBuilder) BuildBlock(tempblock *external.TempBlock) (block *external.TempBlock, err error) {
+
+	onEnd := logger.LogAndMeasureExecutionTime(log, "BuildBlock")
+	defer onEnd()
+	staging := stagingarea.NewStagingArea(bb.databaseContext)
+	dblock, err := staging.AddBlock(tempblock)
+	if err != nil {
+		return nil, err
+	}
+
+	return dblock, nil
 }
 
 func (bb *blockBuilder) BuildBlockTemplate(coinbaseData *external.DomainCoinbaseData,
@@ -57,19 +70,9 @@ func (bb *blockBuilder) buildHeaderTemplate(coinbaseData *external.DomainCoinbas
 
 	staging := stagingarea.NewStagingArea(bb.databaseContext)
 	stagingBlock := staging.StagingBlock()
-	Parents := []*external.BlockLevelParents{
-		&external.BlockLevelParents{
-			stagingBlock.Merkleroot,
-		},
-		&external.BlockLevelParents{
-			stagingBlock.Blockhash,
-		},
-		&external.BlockLevelParents{
-			stagingBlock.Metblock,
-		},
-		&external.BlockLevelParents{
-			stagingBlock.Megablock,
-		},
+	Parents := []external.BlockLevelParents{
+
+		[]*external.DomainHash{stagingBlock.Metblock, stagingBlock.Megablock, stagingBlock.Blockhash},
 	}
 
 	utxoCommitment := bb.getBlockUTXOCommitment(coinbaseData)

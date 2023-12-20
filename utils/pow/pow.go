@@ -1,11 +1,11 @@
 package pow
 
 import (
-	"github.com/Metchain/Metblock/blockchain/consensus/consensushashing"
-	"github.com/Metchain/Metblock/external"
-	"github.com/Metchain/Metblock/utils/difficulty"
-	"github.com/Metchain/Metblock/utils/hashes"
-	"github.com/Metchain/Metblock/utils/serialization"
+	"github.com/Metchain/MetblockD/blockchain/consensus/consensushashing"
+	"github.com/Metchain/MetblockD/external"
+	"github.com/Metchain/MetblockD/utils/difficulty"
+	"github.com/Metchain/MetblockD/utils/hashes"
+	"github.com/Metchain/MetblockD/utils/serialization"
 	"github.com/pkg/errors"
 	"math/big"
 )

@@ -2,7 +2,7 @@ package external
 
 import (
 	"bytes"
-	"github.com/Metchain/Metblock/mconfig"
+	"github.com/Metchain/MetblockD/mconfig"
 )
 
 // DomainCoinbaseData contains data by which a coinbase transaction

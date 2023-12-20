@@ -1,8 +1,8 @@
 package dagconfig
 
 import (
-	"github.com/Metchain/Metblock/appmessage"
-	"github.com/Metchain/Metblock/mconfig"
+	"github.com/Metchain/MetblockD/appmessage"
+	"github.com/Metchain/MetblockD/mconfig"
 )
 
 // MainnetParams defines the network parameters for the main Metchain network.

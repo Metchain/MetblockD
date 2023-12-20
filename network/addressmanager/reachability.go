@@ -1,6 +1,6 @@
 package addressmanager
 
-import "github.com/Metchain/Metblock/appmessage"
+import "github.com/Metchain/MetblockD/appmessage"
 
 // reachabilityFrom returns the relative reachability of the provided local
 // address to the provided remote address.

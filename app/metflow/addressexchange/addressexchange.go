@@ -1,9 +1,9 @@
 package addressexchange
 
 import (
-	"github.com/Metchain/Metblock/appmessage"
-	"github.com/Metchain/Metblock/network/addressmanager"
-	"github.com/Metchain/Metblock/protoserver/routerpkg"
+	"github.com/Metchain/MetblockD/appmessage"
+	"github.com/Metchain/MetblockD/network/addressmanager"
+	"github.com/Metchain/MetblockD/protoserver/routerpkg"
 	"math/rand"
 )
 

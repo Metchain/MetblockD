@@ -15,6 +15,3 @@ func CloneParents(parents []BlockLevelParents) []BlockLevelParents {
 func (sl BlockLevelParents) Clone() BlockLevelParents {
 	return CloneHashes(sl)
 }
-func (sl BlockLevelParents) String() BlockLevelParents {
-	return sl.String()
-}

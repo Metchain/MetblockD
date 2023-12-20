@@ -1,7 +1,7 @@
 package addressmanager
 
 import (
-	"github.com/Metchain/Metblock/appmessage"
+	"github.com/Metchain/MetblockD/appmessage"
 	"net"
 )
 

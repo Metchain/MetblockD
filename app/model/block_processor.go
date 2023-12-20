@@ -1,6 +1,6 @@
 package model
 
-import "github.com/Metchain/Metblock/external"
+import "github.com/Metchain/MetblockD/external"
 
 type BlockProcessor interface {
 	ValidateAndInsertBlock(block *external.DomainBlock, shouldValidateAgainstUTXO bool) (*external.VirtualChangeSet, external.BlockStatus, error)

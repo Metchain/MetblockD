@@ -1,9 +1,9 @@
 package consensushashing
 
 import (
-	"github.com/Metchain/Metblock/external"
-	"github.com/Metchain/Metblock/utils/hashes"
-	"github.com/Metchain/Metblock/utils/serialization"
+	"github.com/Metchain/MetblockD/external"
+	"github.com/Metchain/MetblockD/utils/hashes"
+	"github.com/Metchain/MetblockD/utils/serialization"
 	"io"
 
 	"github.com/pkg/errors"
@@ -48,6 +48,6 @@ func serializeHeader(w io.Writer, header external.BaseBlockHeader) error {
 			}
 		}
 	}*/
-	return serialization.WriteElements(w, header.Merkleroot(), header.Blockheight(), header.UTXOCommitment(), timestamp,
+	return serialization.WriteElements(w, header.Blockheight(), header.UTXOCommitment(), timestamp,
 		header.Bits(), header.Nonce())
 }

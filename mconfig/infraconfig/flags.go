@@ -1,7 +1,7 @@
 package infraconfig
 
 import (
-	"github.com/Metchain/Metblock/mconfig/dagconfig"
+	"github.com/Metchain/MetblockD/mconfig/dagconfig"
 	"time"
 )
 

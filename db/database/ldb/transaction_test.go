@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Metchain/Metblock/db/database"
+	"github.com/Metchain/MetblockD/db/database"
 )
 
 func TestTransactionCloseErrors(t *testing.T) {

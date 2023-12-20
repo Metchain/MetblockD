@@ -2,9 +2,9 @@ package protocol
 
 import (
 	"fmt"
-	"github.com/Metchain/Metblock/app/protocol/common"
-	"github.com/Metchain/Metblock/app/protocol/flowcontext"
-	peerpkg "github.com/Metchain/Metblock/app/protocol/peer"
+	"github.com/Metchain/MetblockD/app/protocol/common"
+	"github.com/Metchain/MetblockD/app/protocol/flowcontext"
+	peerpkg "github.com/Metchain/MetblockD/app/protocol/peer"
 	"sync"
 )
 

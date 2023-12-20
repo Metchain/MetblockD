@@ -7,7 +7,7 @@ package database_test
 
 import (
 	"bytes"
-	"github.com/Metchain/Metblock/db/database"
+	"github.com/Metchain/MetblockD/db/database"
 	"testing"
 )
 

@@ -1,8 +1,8 @@
 package pow
 
 import (
-	"github.com/Metchain/Metblock/external"
-	"github.com/Metchain/Metblock/utils/hashes"
+	"github.com/Metchain/MetblockD/external"
+	"github.com/Metchain/MetblockD/utils/hashes"
 	"math"
 )
 

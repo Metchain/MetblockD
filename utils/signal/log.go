@@ -5,7 +5,7 @@
 package signal
 
 import (
-	"github.com/Metchain/Metblock/utils/logger"
+	"github.com/Metchain/MetblockD/utils/logger"
 )
 
 var MetLog = logger.RegisterSubSystem("METD")

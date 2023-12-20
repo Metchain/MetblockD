@@ -1,7 +1,7 @@
 package transactionhelper
 
 import (
-	"github.com/Metchain/Metblock/external"
+	"github.com/Metchain/MetblockD/external"
 )
 
 func NewSubnetworkTransaction(version uint16, inputs []*external.DomainTransactionInput,

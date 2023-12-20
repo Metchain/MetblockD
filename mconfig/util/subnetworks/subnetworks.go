@@ -1,7 +1,7 @@
 package subnetworks
 
 import (
-	"github.com/Metchain/Metblock/external"
+	"github.com/Metchain/MetblockD/external"
 )
 
 var (

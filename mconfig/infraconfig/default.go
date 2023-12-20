@@ -2,7 +2,7 @@ package infraconfig
 
 import (
 	_ "embed"
-	"github.com/Metchain/Metblock/mconfig/util"
+	"github.com/Metchain/MetblockD/mconfig/util"
 	"os"
 	"path/filepath"
 	"time"

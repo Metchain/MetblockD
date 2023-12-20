@@ -2,8 +2,8 @@ package addressmanager
 
 import (
 	"encoding/binary"
-	"github.com/Metchain/Metblock/appmessage"
-	"github.com/Metchain/Metblock/db/database"
+	"github.com/Metchain/MetblockD/appmessage"
+	"github.com/Metchain/MetblockD/db/database"
 )
 
 var notBannedAddressBucket = database.MakeBucket([]byte("not-banned-addresses"))

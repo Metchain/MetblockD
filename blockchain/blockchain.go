@@ -1,9 +1,9 @@
 package blockchain
 
 import (
-	"github.com/Metchain/Metblock/db/database"
-	"github.com/Metchain/Metblock/domain"
-	pb "github.com/Metchain/Metblock/protoserver/grpcserver/protowire"
+	"github.com/Metchain/MetblockD/db/database"
+	"github.com/Metchain/MetblockD/domain"
+	pb "github.com/Metchain/MetblockD/protoserver/grpcserver/protowire"
 
 	"sync"
 )

@@ -1,8 +1,8 @@
 package consensus
 
 import (
-	"github.com/Metchain/Metblock/app/model"
-	"github.com/Metchain/Metblock/external"
+	"github.com/Metchain/MetblockD/app/model"
+	"github.com/Metchain/MetblockD/external"
 )
 
 type PastMedianTimeManagerConstructor func(int, model.DBReader, model.BlockHeaderStore, *external.DomainHash) model.PastMedianTimeManager

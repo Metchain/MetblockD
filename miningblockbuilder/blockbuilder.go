@@ -1,11 +1,11 @@
 package miningblockbuilder
 
 import (
-	"github.com/Metchain/Metblock/blockchain/consensus/consensusreference"
-	"github.com/Metchain/Metblock/external"
-	"github.com/Metchain/Metblock/miningblockbuilder/miningmempoolmodel"
-	"github.com/Metchain/Metblock/utils/difficulty"
-	"github.com/Metchain/Metblock/utils/logger"
+	"github.com/Metchain/MetblockD/blockchain/consensus/consensusreference"
+	"github.com/Metchain/MetblockD/external"
+	"github.com/Metchain/MetblockD/miningblockbuilder/miningmempoolmodel"
+	"github.com/Metchain/MetblockD/utils/difficulty"
+	"github.com/Metchain/MetblockD/utils/logger"
 )
 
 type blockTemplateBuilder struct {
@@ -29,4 +29,14 @@ func (btb *blockTemplateBuilder) BuildBlockTemplate(coinbaseData *external.Domai
 func (btb *blockTemplateBuilder) ModifyBlockTemplate(newCoinbaseData *external.DomainCoinbaseData) (*external.DomainBlockTemplate, error) {
 	//TODO implement me
 	panic("implement me")
+}
+
+func (btb *blockTemplateBuilder) BuildBlock(block *external.TempBlock) (*external.TempBlock, error) {
+
+	block, err := btb.consensusReference.Consensus().BuildBlock(block)
+	if err != nil {
+		return nil, err
+	}
+
+	return block, nil
 }

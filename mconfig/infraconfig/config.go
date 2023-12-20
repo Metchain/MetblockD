@@ -2,11 +2,11 @@ package infraconfig
 
 import (
 	"fmt"
-	"github.com/Metchain/Metblock/external"
-	"github.com/Metchain/Metblock/mconfig/network"
-	"github.com/Metchain/Metblock/mconfig/util"
-	"github.com/Metchain/Metblock/utils/logger"
-	"github.com/Metchain/Metblock/version"
+	"github.com/Metchain/MetblockD/external"
+	"github.com/Metchain/MetblockD/mconfig/network"
+	"github.com/Metchain/MetblockD/mconfig/util"
+	"github.com/Metchain/MetblockD/utils/logger"
+	"github.com/Metchain/MetblockD/version"
 	"github.com/btcsuite/go-socks/socks"
 	"github.com/jessevdk/go-flags"
 	"github.com/pkg/errors"

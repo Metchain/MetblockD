@@ -1,6 +1,6 @@
 package app
 
-import "github.com/Metchain/Metblock/mconfig/infraconfig"
+import "github.com/Metchain/MetblockD/mconfig/infraconfig"
 
 type metchainApp struct {
 	cfg *infraconfig.Config

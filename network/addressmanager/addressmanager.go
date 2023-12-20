@@ -1,6 +1,6 @@
 package addressmanager
 
-import "github.com/Metchain/Metblock/appmessage"
+import "github.com/Metchain/MetblockD/appmessage"
 
 // BestLocalAddress returns the most appropriate local address to use
 // for the given remote address.

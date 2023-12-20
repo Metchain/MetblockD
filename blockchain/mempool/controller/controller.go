@@ -1,6 +1,6 @@
 package controller
 
-import "github.com/Metchain/Metblock/external"
+import "github.com/Metchain/MetblockD/external"
 
 // IDToTransactionMap maps transactionID to a MempoolTransaction
 type IDToTransactionMap map[external.DomainTransactionID]*MempoolTransaction

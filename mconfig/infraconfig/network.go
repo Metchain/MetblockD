@@ -2,7 +2,7 @@ package infraconfig
 
 import (
 	"fmt"
-	"github.com/Metchain/Metblock/mconfig/dagconfig"
+	"github.com/Metchain/MetblockD/mconfig/dagconfig"
 	"github.com/jessevdk/go-flags"
 	"github.com/pkg/errors"
 	"os"

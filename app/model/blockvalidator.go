@@ -1,6 +1,6 @@
 package model
 
-import "github.com/Metchain/Metblock/external"
+import "github.com/Metchain/MetblockD/external"
 
 // BlockValidator exposes a set of validation classes, after which
 // it's possible to determine whether a block is valid

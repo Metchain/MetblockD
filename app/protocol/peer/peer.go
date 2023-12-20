@@ -1,12 +1,12 @@
 package peer
 
 import (
-	"github.com/Metchain/Metblock/appmessage"
-	"github.com/Metchain/Metblock/external"
-	netadapter "github.com/Metchain/Metblock/protoserver"
-	"github.com/Metchain/Metblock/protoserver/id"
-	mathutil "github.com/Metchain/Metblock/utils/math"
-	"github.com/Metchain/Metblock/utils/mstime"
+	"github.com/Metchain/MetblockD/appmessage"
+	"github.com/Metchain/MetblockD/external"
+	netadapter "github.com/Metchain/MetblockD/protoserver"
+	"github.com/Metchain/MetblockD/protoserver/id"
+	mathutil "github.com/Metchain/MetblockD/utils/math"
+	"github.com/Metchain/MetblockD/utils/mstime"
 	"sync"
 	"time"
 )

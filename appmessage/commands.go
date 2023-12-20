@@ -22,4 +22,11 @@ const (
 	CmdGetBalanceByAddressRequestMessage
 	CmdEstimateNetworkHashesPerSecondResponseMessage
 	CmdEstimateNetworkHashesPerSecondRequestMessage
+
+	//RPC
+	CmdGetInfoRequestMessage
+	CmdGetInfoResponseMessage
 )
+
+// Add all RPC commands here
+var RPCMessageCommandToString = map[MessageCommand]string{}

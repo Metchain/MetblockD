@@ -2,8 +2,8 @@ package ruleerrors
 
 import (
 	"fmt"
-	"github.com/Metchain/Metblock/blockchain/consensus/consensushashing"
-	"github.com/Metchain/Metblock/external"
+	"github.com/Metchain/MetblockD/blockchain/consensus/consensushashing"
+	"github.com/Metchain/MetblockD/external"
 
 	"github.com/pkg/errors"
 )

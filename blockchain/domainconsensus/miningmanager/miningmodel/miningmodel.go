@@ -1,9 +1,10 @@
 package miningmodel
 
-import "github.com/Metchain/Metblock/external"
+import "github.com/Metchain/MetblockD/external"
 
 // BlockTemplateBuilder builds block templates for miners to consume
 type BlockTemplateBuilder interface {
+	BuildBlock(tempblock *external.TempBlock) (block *external.TempBlock, err error)
 	BuildBlockTemplate(CoinbaseData *external.DomainCoinbaseData) (*external.DomainBlockTemplate, error)
 	ModifyBlockTemplate(newCoinbaseData *external.DomainCoinbaseData) (*external.DomainBlockTemplate, error)
 }

@@ -2,9 +2,9 @@ package blockbuilder
 
 import (
 	"errors"
-	"github.com/Metchain/Metblock/app/model"
-	"github.com/Metchain/Metblock/blockchain/consensus/ruleerrors"
-	"github.com/Metchain/Metblock/external"
+	"github.com/Metchain/MetblockD/app/model"
+	"github.com/Metchain/MetblockD/blockchain/consensus/ruleerrors"
+	"github.com/Metchain/MetblockD/external"
 )
 
 func (bb *blockBuilder) validateTransactions(stagingArea *model.StagingArea,

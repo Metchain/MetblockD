@@ -1,6 +1,6 @@
 package model
 
-import "github.com/Metchain/Metblock/external"
+import "github.com/Metchain/MetblockD/external"
 
 // FinalityManager provides method to validate that a block does not violate finality
 type FinalityManager interface {

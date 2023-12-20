@@ -24,3 +24,12 @@ func ConvertDomainInt8ToProtoInt64(i int8) int64 {
 func ConvertValToString(v float32) string {
 	return fmt.Sprintf("%v", v)
 }
+
+func ConvertDomainByteToProtoByte32(b []byte) [32]byte {
+	nv := [32]byte{}
+	for k, v := range b {
+		nv[k] = v
+	}
+
+	return nv
+}

@@ -1,8 +1,7 @@
 package blockheader
 
 import (
-	"fmt"
-	"github.com/Metchain/Metblock/external"
+	"github.com/Metchain/MetblockD/external"
 )
 
 func NewImmutableBlockHeader(
@@ -11,10 +10,10 @@ func NewImmutableBlockHeader(
 	blockhash *external.DomainHash,
 	previoushash *external.DomainHash,
 	merkleroot *external.DomainHash,
-	parents []*external.BlockLevelParents,
+	parents []external.BlockLevelParents,
 	metblock *external.DomainHash,
 	megablock *external.DomainHash,
-	childblocks []*external.BlockLevelChildern,
+	childblocks []external.BlockLevelChildern,
 	timeInMilliseconds int64,
 	bits uint64,
 	nonce uint64,
@@ -22,6 +21,7 @@ func NewImmutableBlockHeader(
 	verificationPoint *external.DomainHash,
 	utxo []byte,
 ) external.BlockHeader {
+
 	return &blockHeader{
 		version:            version,
 		blockheight:        blockheight,
@@ -50,8 +50,8 @@ type blockHeader struct {
 	merkleroot         *external.DomainHash
 	metblock           *external.DomainHash
 	megablock          *external.DomainHash
-	childblocks        []*external.BlockLevelChildern
-	parents            []*external.BlockLevelParents
+	childblocks        []external.BlockLevelChildern
+	parents            []external.BlockLevelParents
 	timeInMilliseconds int64
 	bits               uint64
 	nonce              uint64
@@ -61,6 +61,24 @@ type blockHeader struct {
 	utxocommitment     []byte
 }
 
+func (bh *blockHeader) ToImmutable() external.BlockHeader {
+	return bh.clone()
+}
+
+func (bh *blockHeader) SetNonce(nonce uint64) {
+
+	bh.nonce = nonce
+}
+
+func (bh *blockHeader) SetTimeInMilliseconds(timeInMilliseconds int64) {
+
+	bh.timeInMilliseconds = timeInMilliseconds
+}
+
+func (bh *blockHeader) SetHashMerkleRoot(hashMerkleRoot *external.DomainHash) {
+
+	bh.merkleroot = hashMerkleRoot
+}
 func (bh *blockHeader) UtxoCommitment() []byte {
 	//TODO implement me
 	return bh.utxocommitment
@@ -71,20 +89,15 @@ func (bh *blockHeader) Btype() int {
 	return bh.bytpe
 }
 
-func (bh *blockHeader) DirectParents() []*external.BlockLevelParents {
-	//TODO implement me
-
-	return bh.parents
-}
-
-func (bh *blockHeader) ParentByteToString() []string {
-	n := []string{}
-	for k, v := range bh.parents {
-		n[k] = fmt.Sprintf("%x", v)
+func (bh *blockHeader) DirectParents() external.BlockLevelParents {
+	if len(bh.parents) == 0 {
+		return external.BlockLevelParents{}
 	}
-	return n
+
+	return bh.parents[0]
 }
-func (bh *blockHeader) ChildBlocks() []*external.BlockLevelChildern {
+
+func (bh *blockHeader) ChildBlocks() []external.BlockLevelChildern {
 	//TODO implement me
 	return bh.childblocks
 }
@@ -96,7 +109,7 @@ func (bh *blockHeader) BlockLevel(maxBlockLevel int) int {
 
 func (bh *blockHeader) ToMutable() external.MutableBlockHeader {
 	//TODO implement me
-	panic("implement me")
+	return bh.clone()
 }
 
 func (bh *blockHeader) Version() uint16 {
@@ -121,9 +134,9 @@ func (bh *blockHeader) Previoushash() *external.DomainHash {
 	return bh.previoushash
 }
 
-func (bh *blockHeader) Merkleroot() *external.DomainHash {
+func (bh *blockHeader) Merkleroothash() *external.DomainHash {
 	//TODO implement me
-	return bh.Merkleroot()
+	return bh.merkleroot
 }
 
 func (bh *blockHeader) MetBlock() *external.DomainHash {
@@ -152,6 +165,9 @@ func (bh *blockHeader) TimeInMilliseconds() int64 {
 
 func (bh *blockHeader) Nonce() uint64 {
 	return bh.nonce
+}
+func (bc *blockHeader) Parents() []external.BlockLevelParents {
+	return bc.parents
 }
 
 func (bh *blockHeader) Equal(other external.BaseBlockHeader) bool {
@@ -200,10 +216,21 @@ func (bh *blockHeader) Equal(other external.BaseBlockHeader) bool {
 
 func (bh *blockHeader) clone() *blockHeader {
 	return &blockHeader{
-		version: bh.version,
-
+		version:            bh.version,
+		blockheight:        bh.blockheight,
+		blockhash:          bh.blockhash,
+		previoushash:       bh.previoushash,
+		merkleroot:         bh.merkleroot,
+		parents:            bh.parents,
+		metblock:           bh.metblock,
+		megablock:          bh.megablock,
+		childblocks:        bh.childblocks,
 		timeInMilliseconds: bh.timeInMilliseconds,
-		bits:               bh.bits,
-		nonce:              bh.nonce,
+
+		bits:              bh.bits,
+		nonce:             bh.nonce,
+		blockLevel:        bh.blockLevel,
+		verificationPoint: bh.verificationPoint,
+		utxocommitment:    bh.utxocommitment,
 	}
 }

@@ -1,12 +1,12 @@
 package domain
 
 import (
-	"github.com/Metchain/Metblock/blockchain/consensus"
-	"github.com/Metchain/Metblock/blockchain/consensus/consensusreference"
-	"github.com/Metchain/Metblock/blockchain/domainconsensus/miningmanager"
-	"github.com/Metchain/Metblock/blockchain/mempool"
-	"github.com/Metchain/Metblock/db/database"
-	"github.com/Metchain/Metblock/external"
+	"github.com/Metchain/MetblockD/blockchain/consensus"
+	"github.com/Metchain/MetblockD/blockchain/consensus/consensusreference"
+	"github.com/Metchain/MetblockD/blockchain/domainconsensus/miningmanager"
+	"github.com/Metchain/MetblockD/blockchain/mempool"
+	"github.com/Metchain/MetblockD/db/database"
+	"github.com/Metchain/MetblockD/external"
 )
 
 // Domain provides a reference to the domain's external aps

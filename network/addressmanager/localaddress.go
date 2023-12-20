@@ -1,8 +1,8 @@
 package addressmanager
 
 import (
-	"github.com/Metchain/Metblock/appmessage"
-	"github.com/Metchain/Metblock/utils/mstime"
+	"github.com/Metchain/MetblockD/appmessage"
+	"github.com/Metchain/MetblockD/utils/mstime"
 	"github.com/pkg/errors"
 	"net"
 	"sync"

@@ -1,6 +1,6 @@
 package model
 
-import "github.com/Metchain/Metblock/external"
+import "github.com/Metchain/MetblockD/external"
 
 // BlockRelations represents a block's parent/child relations
 type BlockRelations struct {

@@ -1,8 +1,8 @@
 package database
 
 import (
-	"github.com/Metchain/Metblock/app/model"
-	"github.com/Metchain/Metblock/db/database"
+	"github.com/Metchain/MetblockD/app/model"
+	"github.com/Metchain/MetblockD/db/database"
 )
 
 type dbKey struct {

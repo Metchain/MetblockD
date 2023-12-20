@@ -2,7 +2,7 @@ package panics
 
 import (
 	"fmt"
-	"github.com/Metchain/Metblock/utils/logger"
+	"github.com/Metchain/MetblockD/utils/logger"
 	"os"
 	"runtime/debug"
 	"sync/atomic"

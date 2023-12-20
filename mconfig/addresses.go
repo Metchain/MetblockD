@@ -6,7 +6,7 @@ package mconfig
 
 import (
 	"fmt"
-	"github.com/Metchain/Metblock/utils/bech32"
+	"github.com/Metchain/MetblockD/utils/bech32"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/blake2b"
 )

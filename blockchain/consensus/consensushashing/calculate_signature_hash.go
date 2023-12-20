@@ -1,9 +1,9 @@
 package consensushashing
 
 import (
-	"github.com/Metchain/Metblock/external"
-	"github.com/Metchain/Metblock/utils/hashes"
-	"github.com/Metchain/Metblock/utils/serialization"
+	"github.com/Metchain/MetblockD/external"
+	"github.com/Metchain/MetblockD/utils/hashes"
+	"github.com/Metchain/MetblockD/utils/serialization"
 	"github.com/pkg/errors"
 )
 

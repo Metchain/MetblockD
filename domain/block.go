@@ -1,8 +1,8 @@
 package domain
 
 import (
-	"github.com/Metchain/Metblock/db/database"
-	"github.com/Metchain/Metblock/mconfig"
+	"github.com/Metchain/MetblockD/db/database"
+	"github.com/Metchain/MetblockD/mconfig"
 	"github.com/btcsuite/goleveldb/leveldb"
 )
 

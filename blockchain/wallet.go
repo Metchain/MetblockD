@@ -3,13 +3,13 @@ package blockchain
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Metchain/Metblock/db/database"
+	"github.com/Metchain/MetblockD/db/database"
 
 	"math/big"
 	"strconv"
 	"strings"
 
-	pb "github.com/Metchain/Metblock/protoserver/grpcserver/protowire"
+	pb "github.com/Metchain/MetblockD/protoserver/grpcserver/protowire"
 	"google.golang.org/protobuf/proto"
 )
 

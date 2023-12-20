@@ -1,7 +1,7 @@
 package domain
 
 import (
-	"github.com/Metchain/Metblock/db/database"
+	"github.com/Metchain/MetblockD/db/database"
 )
 
 func (mc *Metchain) Put(key *database.Key, value []byte) interface{} {
